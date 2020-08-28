@@ -577,6 +577,17 @@ pexpect = "*"
 test = ["pytest", "pytest-asyncio", "jupyterlab (>=2.0,<3.0)"]
 
 [[package]]
+category = "main"
+description = "A Jupyter Notebook server extension which acts a proxy for the GitHub API."
+name = "jupyterlab-github"
+optional = false
+python-versions = ">=3.5"
+version = "2.0.0"
+
+[package.dependencies]
+notebook = "*"
+
+[[package]]
 category = "dev"
 description = "JupyterLab Server"
 name = "jupyterlab-server"
@@ -1467,7 +1478,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "9345292c8e5d4467d0f1bc9baf91005ea13528ba492bafcc5087eec6788dc2b3"
+content-hash = "65fdb0d48a133ebd4d21b7a5b0cc242c2f5dec44696730e540357cb0dec4c1c3"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1708,6 +1719,10 @@ jupyterlab = [
 jupyterlab-git = [
     {file = "jupyterlab_git-0.20.0-py3-none-any.whl", hash = "sha256:6a8494a93ab2b32e60417a1ed56d7c3980f646c112154ef2b8c59c1d50ecc32b"},
     {file = "jupyterlab_git-0.20.0.tar.gz", hash = "sha256:b190276b1e89627e20ad688c85851d662787e33bb9a3643eed07681a59e64363"},
+]
+jupyterlab-github = [
+    {file = "jupyterlab_github-2.0.0-py3-none-any.whl", hash = "sha256:954db8f24486ea4fb283e16e4dc74b19e11256f44b71df8db8a13dd9e0501e28"},
+    {file = "jupyterlab_github-2.0.0.tar.gz", hash = "sha256:b132fd759a19a7c2c06b01867c7cdf7428901c3ebe1fcc9f05ce592bb39d5436"},
 ]
 jupyterlab-server = [
     {file = "jupyterlab_server-1.2.0-py3-none-any.whl", hash = "sha256:55d256077bf13e5bc9e8fbd5aac51bef82f6315111cec6b712b9a5ededbba924"},
