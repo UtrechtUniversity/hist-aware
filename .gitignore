@@ -1,7 +1,5 @@
 # Data
-data/**
-data/**/*
-
+data/1950/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
