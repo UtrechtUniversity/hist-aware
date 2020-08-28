@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "histaware"
+version = "0.1.0"
+description = ""
+authors = ["Leonardo Vida <lleonardovida@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+jupyter = "^1.0.0"
+notebook = "^6.1.3"
+jupyter-contrib-nbextensions = "^0.5.1"
+ipykernel = "^5.3.4"
+pandas = "^1.1.1"
+numpy = "^1.19.1"
+spacy = "^2.3.2"
+torch = "^1.6.0"
+torchvision = "^0.7.0"
+transformers = "^3.0.2"
+sentence-transformers = "^0.3.4"
+seaborn = "^0.10.1"
+jupytext = "^1.5.2"
+jupyter-tabnine = "^1.1.0"
+jupyterlab-git = "^0.20.0"
+pyarrow = "^1.0.1"
+
+[tool.poetry.dev-dependencies]
+jupyterlab = "^2.2.6"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
