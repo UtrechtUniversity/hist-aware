@@ -18,11 +18,12 @@ torchvision = "^0.7.0"
 transformers = "^3.0.2"
 sentence-transformers = "^0.3.4"
 seaborn = "^0.10.1"
-jupytext = "^1.5.2"
 jupyter-tabnine = "^1.1.0"
 jupyterlab-git = "^0.20.0"
 pyarrow = "^1.0.1"
 jupyterlab_github = "^2.0.0"
+python-didl-lite = "^1.2.4"
+defusedxml = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.2.6"

@@ -607,23 +607,6 @@ test = ["pytest", "requests"]
 
 [[package]]
 category = "main"
-description = "Jupyter notebooks as Markdown documents, Julia, Python or R scripts"
-name = "jupytext"
-optional = false
-python-versions = "*"
-version = "1.5.2"
-
-[package.dependencies]
-nbformat = ">=4.0.0"
-pyyaml = "*"
-toml = "*"
-
-[package.extras]
-myst = ["myst-parser (>=0.8,<1.0)"]
-toml = ["toml"]
-
-[[package]]
-category = "main"
 description = "A fast implementation of the Cassowary constraint solver"
 name = "kiwisolver"
 optional = false
@@ -994,6 +977,17 @@ six = ">=1.5"
 
 [[package]]
 category = "main"
+description = "DIDL-Lite (Digital Item Declaration Language) tools for Python"
+name = "python-didl-lite"
+optional = false
+python-versions = "*"
+version = "1.2.4"
+
+[package.dependencies]
+defusedxml = ">=0.5.0"
+
+[[package]]
+category = "main"
 description = "World timezone definitions, modern and historical"
 name = "pytz"
 optional = false
@@ -1315,14 +1309,6 @@ testing = ["pytest"]
 
 [[package]]
 category = "main"
-description = "Python Library for Tom's Obvious, Minimal Language"
-name = "toml"
-optional = false
-python-versions = "*"
-version = "0.10.1"
-
-[[package]]
-category = "main"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
 name = "torch"
 optional = false
@@ -1478,7 +1464,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "65fdb0d48a133ebd4d21b7a5b0cc242c2f5dec44696730e540357cb0dec4c1c3"
+content-hash = "d75c08f07d58e67961d3f7dc12ab9a4a8128aa2058dbe0de45823373735c6e78"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1727,9 +1713,6 @@ jupyterlab-github = [
 jupyterlab-server = [
     {file = "jupyterlab_server-1.2.0-py3-none-any.whl", hash = "sha256:55d256077bf13e5bc9e8fbd5aac51bef82f6315111cec6b712b9a5ededbba924"},
     {file = "jupyterlab_server-1.2.0.tar.gz", hash = "sha256:5431d9dde96659364b7cc877693d5d21e7b80cea7ae3959ecc2b87518e5f5d8c"},
-]
-jupytext = [
-    {file = "jupytext-1.5.2.tar.gz", hash = "sha256:1cebc9f5975b4c08db3de6d7d61b35f8c33a24cf2c8c04eee7b8a7aab8ddc39b"},
 ]
 kiwisolver = [
     {file = "kiwisolver-1.2.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:443c2320520eda0a5b930b2725b26f6175ca4453c61f739fef7a5847bd262f74"},
@@ -2056,6 +2039,10 @@ python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
 ]
+python-didl-lite = [
+    {file = "python-didl-lite-1.2.4.tar.gz", hash = "sha256:04a3911cba7ac457e4b499b34fae461a2ba5eab9d4e97ed5c8310844e18474a6"},
+    {file = "python_didl_lite-1.2.4-py3-none-any.whl", hash = "sha256:f7747d8f8c9574ed2a75796cfb310d619c42b69b32b15cabe71db16e87c2bcbc"},
+]
 pytz = [
     {file = "pytz-2020.1-py2.py3-none-any.whl", hash = "sha256:a494d53b6d39c3c6e44c3bec237336e14305e4f29bbf800b599253057fbb79ed"},
     {file = "pytz-2020.1.tar.gz", hash = "sha256:c35965d010ce31b23eeb663ed3cc8c906275d6be1a34393a1d73a41febf4a048"},
@@ -2318,10 +2305,6 @@ tokenizers = [
     {file = "tokenizers-0.8.1rc1-cp38-cp38-win32.whl", hash = "sha256:6ef5fb622383b437ec71412f2457211f330286abc35953ba150a7f58ebee217b"},
     {file = "tokenizers-0.8.1rc1-cp38-cp38-win_amd64.whl", hash = "sha256:6b8fe503a38afe67085accc433ce3692c002d3c48baf20e67a3e93b558b96597"},
     {file = "tokenizers-0.8.1rc1.tar.gz", hash = "sha256:98af43fa61f1fc0ade954102d3d34e02df3c6f896315500865b93400f93dd99e"},
-]
-toml = [
-    {file = "toml-0.10.1-py2.py3-none-any.whl", hash = "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"},
-    {file = "toml-0.10.1.tar.gz", hash = "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f"},
 ]
 torch = [
     {file = "torch-1.6.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:7669f4d923b5758e28b521ea749c795ed67ff24b45ba20296bc8cff706d08df8"},
