@@ -26,6 +26,10 @@ python-didl-lite = "^1.2.4"
 defusedxml = "^0.6.0"
 untangle = "^1.1.1"
 xmltodict = "^0.12.0"
+kb = "^0.1.8"
+pillow = "^7.2.0"
+tqdm = "^4.49.0"
+hdbscan = "^0.8.26"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.2.6"
