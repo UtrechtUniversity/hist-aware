@@ -4,6 +4,7 @@ data/Guard_1950.csv
 data/Guard_1950.csv/**
 data/Times_1950.csv/**
 data/Times_1950.csv
+data/models/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

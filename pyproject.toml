@@ -27,9 +27,9 @@ untangle = "^1.1.1"
 xmltodict = "^0.12.0"
 kb = "^0.1.8"
 pillow = "^7.2.0"
-tqdm = "^4.49.0"
+tqdm = "4.40.2"
 hdbscan = "^0.8.26"
-numpy = "^1.19.2"
+numpy = "1.17.4"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.2.6"
