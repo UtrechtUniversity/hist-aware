@@ -35,31 +35,3 @@ def search_synonyms(nlp, word, df, n):
                                  ]
                               )
     return result
-
-### Functions not used
-
-def list_paragraphs(df):
-    list_p = []
-
-    for index, row in tqdm(df.iterrows()):
-        for i in range(1,df.shape[1]):
-            p = "p_"+str(i)
-            try:
-                if row[p] and row[p] is not None:
-                    list_p.append(row[p])
-            except KeyError as e:
-                continue
-
-    return(list_p)
-
-def list_title(df):
-    list_titles = []
-
-    for index, row in tqdm(df.iterrows()):
-        try:
-            if row["title"] and row["title"] is not None:
-                list_titles.append(row["title"])
-        except KeyError as e:
-            continue
-
-    return(list_titles)
