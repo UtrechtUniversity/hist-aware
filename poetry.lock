@@ -232,6 +232,18 @@ six = "*"
 
 [[package]]
 category = "main"
+description = "hnswlib"
+name = "hnswlib"
+optional = false
+python-versions = "*"
+version = "0.4.0"
+
+[package.dependencies]
+numpy = "*"
+pybind11 = ">=2.0"
+
+[[package]]
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -967,6 +979,14 @@ numpy = ">=1.14"
 
 [[package]]
 category = "main"
+description = "Seamless operability between C++11 and Python"
+name = "pybind11"
+optional = false
+python-versions = "*"
+version = "2.5.0"
+
+[[package]]
+category = "main"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
@@ -1552,7 +1572,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "2de115dfafc6062c8280bb8ee1c026c6bf0048e16cffcb594e4971efbce4d2c8"
+content-hash = "4a1da610c6a1f6613c591a77973633325484af7625dc7b28a2056113e407867c"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -1741,6 +1761,9 @@ gitpython = [
 ]
 hdbscan = [
     {file = "hdbscan-0.8.26.tar.gz", hash = "sha256:81a61cd011e010b20e7cbd8d235053a98892504d32881d379d1902278817927e"},
+]
+hnswlib = [
+    {file = "hnswlib-0.4.0.tar.gz", hash = "sha256:12d93a2bfdc5dda21b91addab88cbf467078615ae3b36fecb79b1f8b1778e4d6"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -2144,6 +2167,10 @@ pyarrow = [
     {file = "pyarrow-1.0.1-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:0f95821b5b60e6da151ebf287e653f873334763ceab7338285fec7559216f888"},
     {file = "pyarrow-1.0.1-cp38-cp38-win_amd64.whl", hash = "sha256:6cfa927b7ab068146dc4e7055e6857b087c0abe2f6b08d784c94e229ca430d3c"},
     {file = "pyarrow-1.0.1.tar.gz", hash = "sha256:0b67124beb16dcd47b4cd7a8bac989826aee6eac6a280066476b7289206b1175"},
+]
+pybind11 = [
+    {file = "pybind11-2.5.0-py2.py3-none-any.whl", hash = "sha256:205d9f9615eac190811cb8c3c2b2f95f6844ddba0fa0a1d45d00793338741601"},
+    {file = "pybind11-2.5.0.tar.gz", hash = "sha256:ea5a4e7a880112915463826f1acbec5892df36dfe102ecb249229ac514fb54ad"},
 ]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
