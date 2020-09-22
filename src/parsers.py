@@ -15,7 +15,7 @@ import xmltodict
 from itertools import chain
 import logger
 
-HAlogger = logger.get_logger("parser")
+HAlogger = logger.get_logger("parsers")
 HAlogger.debug("Test message")
 
 def parse_XML_article(path, art_dir, title, index):

@@ -14,15 +14,14 @@ import collections
 import xmltodict
 from itertools import chain
 import logger
-
 import parsers
 
-HAlogger = logger.get_logger("utils")
+HAlogger = logger.get_logger("iterators")
 HAlogger.debug("Test message")
 
 # TODO: add restart to metadata
 
-def iterate_directory(root_path, dir_path, file_type):
+def iterate_directory(dir_path, file_type):
     """Iterate over the `path_dir` and its children and
     create a dictionary of
         - name
@@ -30,7 +29,7 @@ def iterate_directory(root_path, dir_path, file_type):
         - dir
     names of files found
     """
-    main_path=root_path+dir_path
+    main_path=".."+dir_path
     file_names = {}
     list_names = []
 
@@ -46,7 +45,7 @@ def iterate_directory(root_path, dir_path, file_type):
 
     return(list_names)
 
-def iterate_directory_gz(root_path, dir_path, file_type):
+def iterate_directory_gz(dir_path, file_type):
     """Iterate over the `path_dir` and its children and
     create a dictionary of
         - name
@@ -55,7 +54,7 @@ def iterate_directory_gz(root_path, dir_path, file_type):
         - content
     of .gz files found.
     """
-    main_path=root_path+dir_path
+    main_path=".."+dir_path
     gz_content = {}
     list_gzs = []
     
@@ -74,12 +73,12 @@ def iterate_directory_gz(root_path, dir_path, file_type):
     
     return(list_gzs)
 
-def ungzip_metdata(root_path, dir_path, file_type):
+def ungzip_metdata(dir_path, file_type):
     """Iterate over the `path_dir` and its children and
     ungizp the .gz metadata files found.
     """
 
-    main_path=root_path+dir_path
+    main_path=".."+dir_path
 
     for subdir, dirs, files in os.walk(main_path, topdown=True):
         for file in files:
@@ -192,7 +191,7 @@ def iterate_metadata(save_path, files):
                     title = row["metadata_name"],
                     index = row["index"]))
         except Exception as e:
-            print(f"Index: {index}", e.args)
+            HAlogger.debug(f"Something missing at index: {index}")
             continue
         # Each X, save the file in a .ftr
         if (i == 1000):
