@@ -155,7 +155,7 @@ if __name__ == '__main__':
                     sep=",",
                     quotechar='"',
                     index=False
-                )  
+                )
 
             # Reset list of saved csv to zero
             articles_csv_files = []
