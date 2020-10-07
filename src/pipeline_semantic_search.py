@@ -4,17 +4,8 @@ from sentence_transformers import SentenceTransformer, LoggingHandler, util
 # These are the pure transformers from huggingface
 import transformers
 import torch
-from tqdm import tqdm
-import hdbscan
 import pandas as pd
 import numpy as np
-import logging
-from pylab import rcParams
-from collections import defaultdict
-from textwrap import wrap
-from torch import nn, optim
-from torch.utils.data import Dataset, DataLoader
-import hnswlib
 
 import logger
 
@@ -29,20 +20,23 @@ HAlogger.debug("Test message")
 
 ### CODE
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     HAlogger.debug("Import data")
     # Import data
-    search = pd.read_csv("../data/processed/selected_articles/2020-09-22_energie.csv")
+    search = pd.read_csv("./data/processed/selected_articles/2020-09-22_energie.csv")
 
     # Find GPU on device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     HAlogger.debug("Load transformer")
-    embedder = SentenceTransformer('../data/models/distiluse-base-multilingual-cased')
+    embedder = SentenceTransformer(
+        "./data/models/distiluse/distiluse-base-multilingual-cased"
+    )
+    # embedder_bertje = SentenceTransformer("./data/models/bertje")
 
     # Corpus
     HAlogger.debug("Creating embeddings for the corpus")
-    corpus = list(search["text"])[10:]
+    corpus = list(search["text"])[11:]
     corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
 
     # Query sentences:
@@ -55,7 +49,7 @@ if __name__ == '__main__':
         corpus_embeddings=corpus_embeddings,
         query_chunk_size=10,
         corpus_chunk_size=1000,
-        top_k=50
+        top_k=100,
     )
 
     for a in test:
