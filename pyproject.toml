@@ -37,6 +37,8 @@ hnswlib = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.2.6"
+black = {version = "^20.8b1", allow-prereleases = true}
+flake8 = "^3.8.4"
 
 [build-system]
 requires = ["poetry>=0.12"]

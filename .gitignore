@@ -1,10 +1,10 @@
 # Data
-data/1950/**
-data/Guard_1950.csv
-data/Guard_1950.csv/**
-data/Times_1950.csv/**
-data/Times_1950.csv
+data/1950/**/*
+data/1950/Guard_1950.csv
+data/1950/Times_1950.csv
 data/models/**
+
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
