@@ -2,12 +2,11 @@
 from sentence_transformers import SentenceTransformer, LoggingHandler, util
 
 # These are the pure transformers from huggingface
-import transformers
 import torch
 import pandas as pd
 import numpy as np
 
-import logger
+from src import logger
 
 # Set fixed random seed
 RANDOM_SEED = 42
@@ -17,8 +16,6 @@ torch.manual_seed(RANDOM_SEED)
 # Logger
 HAlogger = logger.get_logger("semantic-search")
 HAlogger.debug("Test message")
-
-### CODE
 
 if __name__ == "__main__":
     HAlogger.debug("Import data")
@@ -56,18 +53,18 @@ if __name__ == "__main__":
         print(a)
 
     # # Find the closest 5 sentences of the corpus for each query sentence based on cosine similarity
-    # top_k = 10
-    # for query in queries:
-    #     query_embedding = embedder.encode(query, convert_to_tensor=True)
-    #     cos_scores = util.pytorch_cos_sim(query_embedding, corpus_embeddings)[0]
-    #     cos_scores = cos_scores.cpu()
+    top_k = 10
+    for query in queries:
+        query_embedding = embedder.encode(query, convert_to_tensor=True)
+        cos_scores = util.pytorch_cos_sim(query_embedding, corpus_embeddings)[0]
+        cos_scores = cos_scores.cpu()
 
-    #     #We use np.argpartition, to only partially sort the top_k results
-    #     top_results = np.argpartition(-cos_scores, range(top_k))[0:top_k]
+        # We use np.argpartition, to only partially sort the top_k results
+        top_results = np.argpartition(-cos_scores, range(top_k))[0:top_k]
 
-    #     print("\n\n======================\n\n")
-    #     print("Query:", query)
-    #     print("\nTop 5 most similar sentences in corpus:")
+        print("\n\n======================\n\n")
+        print("Query:", query)
+        print("\nTop 5 most similar sentences in corpus:")
 
-    #     for idx in top_results[0:top_k]:
-    #         print(corpus[idx].strip(), "(Score: %.4f)" % (cos_scores[idx]))
+        for idx in top_results[0:top_k]:
+            print(corpus[idx].strip(), "(Score: %.4f)" % (cos_scores[idx]))

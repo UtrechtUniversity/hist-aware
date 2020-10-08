@@ -56,6 +56,7 @@ if __name__ == "__main__":
             util.http_get(url, dataset_path)
 
         # Get all unique sentences from the file
+        # TODO: This is already done in the previous step
         corpus_sentences = set()
         with open(dataset_path, encoding="utf8") as fIn:
             reader = csv.DictReader(fIn, delimiter="\t", quoting=csv.QUOTE_MINIMAL)
