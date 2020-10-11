@@ -41,7 +41,7 @@ if __name__ == "__main__":
     )
 
     embedding_size = 768  # Size of embeddings
-    top_k_hits = 1000  # Output k hits
+    top_k_hits = 20  # Output k hits
 
     # Defining our hnswlib index
     # We use Inner Product (dot-product) as Index. We will normalize our vectors to unit length, then is Inner Product equal to cosine similarity
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # Controlling the recall by setting ef:
     index.set_ef(50)  # ef should always be > top_k_hits
 
-    ######### Search in the index ###########
+    # Search in the index ###########
 
     print("Corpus loaded with {} sentences / embeddings".format(len(corpus_sentences)))
 

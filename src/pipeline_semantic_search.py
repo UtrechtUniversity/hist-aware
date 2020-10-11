@@ -20,26 +20,38 @@ HAlogger.debug("Test message")
 if __name__ == "__main__":
     HAlogger.debug("Import data")
     # Import data
-    search = pd.read_csv("./data/processed/selected_articles/2020-09-22_energie.csv")
+    search = pd.read_csv("./data/processed/selected_articles/2020-10-07_aardgas.csv")
 
     # Find GPU on device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     HAlogger.debug("Load transformer")
-    embedder = SentenceTransformer(
-        "./data/models/distiluse/distiluse-base-multilingual-cased"
-    )
-    # embedder_bertje = SentenceTransformer("./data/models/bertje")
+    # embedder = SentenceTransformer(
+    #     "./data/models/distiluse/distiluse-base-multilingual-cased"
+    # )
+    embedder = SentenceTransformer("./data/models/bertje")
 
     # Corpus
     HAlogger.debug("Creating embeddings for the corpus")
     corpus = list(search["text"])[11:]
-    corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    corpus_embeddings = embedder.encode(
+        corpus,
+        device=device,
+        show_progress_bar=True,
+        convert_to_tensor=True,
+        num_workers=2,
+    )
 
     # Query sentences:
     HAlogger.debug("Creating embeddings for the queries")
     queries = list(search["text"])[0:10]
-    queries_embeddings = embedder.encode(queries, convert_to_tensor=True)
+    queries_embeddings = embedder.encode(
+        queries,
+        device=device,
+        show_progress_bar=True,
+        convert_to_tensor=True,
+        num_workers=2,
+    )
 
     test = util.semantic_search(
         query_embeddings=queries_embeddings,
