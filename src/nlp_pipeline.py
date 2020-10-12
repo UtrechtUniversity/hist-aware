@@ -51,5 +51,5 @@ if __name__ == "__main__":
     # TextSelection.iterate_directories()
     # `Process_files` works only if DATAFILE is True
     # TextSelection.process_files()
-    # TextSelection.retrieved_saved_files()
-    # TextSelection.search_synonyms()
+    TextSelection.retrieved_saved_files()
+    TextSelection.search_synonyms()

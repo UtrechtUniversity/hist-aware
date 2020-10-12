@@ -2,15 +2,15 @@
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
+import re
 
 
 def select_articles(nlp, word, df, n):
     res = search_synonyms(nlp, word, df, n)
-
     # Drop duplicates to keep only individual articles
     # but sum the "count" column
     res.groupby(
-        [
+        by=[
             "Unnamed: 0_x",
             "type",
             "text",
@@ -32,9 +32,9 @@ def select_articles(nlp, word, df, n):
             "newspaper_issuenumber",
             "newspaper_language",
         ]
-    ).sum()
-    # res.drop_duplicates(ignore_index=True, inplace=True)
-
+    )["count"].sum().reset_index()
+    # Sort by counts
+    res.sort_values(by=["count"], ascending=False, inplace=True)
     return res
 
 
@@ -46,7 +46,7 @@ def search_synonyms(nlp, word, df, n):
         - dataframe in which to search
         - The total number of synonym to retrieve
     """
-    result = pd.DataFrame()
+    appended_data = []
 
     ms = nlp.vocab.vectors.most_similar(
         np.asarray([nlp.vocab.vectors[nlp.vocab.strings[word]]]), n=n
@@ -58,8 +58,8 @@ def search_synonyms(nlp, word, df, n):
 
     for syn in tqdm(synonyms):
         # Searches synonym
-        res = df.loc[df.text.str.contains(syn, case=False, regex=False)].copy()
-        # Count appearances of synonym in sentence
-        res.count = res.text.str.count(syn)
-        result = result.append(res)
-    return result
+        res = df[df["text"].str.contains(syn, case=False, regex=False)].copy()
+        res["count"] = res["text"].str.count(syn, re.I)
+        appended_data.append(res)
+    appended_df = pd.concat(appended_data)
+    return appended_df
