@@ -3,7 +3,7 @@ import sys
 from logging.handlers import TimedRotatingFileHandler
 
 FORMATTER = logging.Formatter("%(asctime)s — %(name)s — %(levelname)s — %(message)s")
-LOG_FILE = "histaware.log"
+LOG_FILE = "logs/histaware.log"
 
 
 def get_console_handler():
