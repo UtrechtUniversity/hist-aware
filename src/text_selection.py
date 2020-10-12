@@ -2,7 +2,6 @@
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
-import re
 
 
 def select_articles(nlp, word, df, n):
@@ -59,8 +58,8 @@ def search_synonyms(nlp, word, df, n):
 
     for syn in tqdm(synonyms):
         # Searches synonym
-        res = df[df["text"].str.contains(syn, case=False, regex=False)]
+        res = df.loc[df.text.str.contains(syn, case=False, regex=False)].copy()
         # Count appearances of synonym in sentence
-        res["count"] = res["text"].str.count(syn)
+        res.count = res.text.str.count(syn)
         result = result.append(res)
     return result

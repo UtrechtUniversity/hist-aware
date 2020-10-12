@@ -1,11 +1,7 @@
 import re
-import shutil
 import pathlib
 from datetime import datetime
 import xml.etree.ElementTree as et
-
-import numpy as np
-import pandas as pd
 import xmltodict
 
 from src import logger

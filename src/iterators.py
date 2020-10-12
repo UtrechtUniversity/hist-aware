@@ -55,8 +55,8 @@ def iterate_directory_gz(dir_path, file_type):
             filepath = subdir + os.sep + file
             if filepath.endswith(str(file_type)):
                 # Create list of dict
-                # TODO: f is not used, not a problem
-                with gzip.open(filepath, "rb") as f:
+                # TODO: TO CHECK that if f is not used it's not a problem
+                with gzip.open(filepath, "rb"):
                     gz_content["metadata_name"] = file + ".xml"
                     gz_content["metadata_dir"] = subdir
                     gz_content["metadata_path"] = filepath + ".xml"
