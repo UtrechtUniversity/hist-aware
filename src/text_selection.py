@@ -9,7 +9,32 @@ def select_articles(nlp, word, df, n):
     res = search_synonyms(nlp, word, df, n)
 
     # Drop duplicates to keep only individual articles
-    res.drop_duplicates(ignore_index=True, inplace=True)
+    # but sum the "count" column
+    res.groupby(
+        [
+            "Unnamed: 0_x",
+            "type",
+            "text",
+            "article_name",
+            "date",
+            "index_article",
+            "article_filepath",
+            "dir",
+            "Unnamed: 0_y",
+            "metadata_title",
+            "index_metadata",
+            "metadata_filepath",
+            "newspaper_title",
+            "newspaper_date",
+            "newspaper_city",
+            "newspaper_publisher",
+            "newspaper_source",
+            "newspaper_volume",
+            "newspaper_issuenumber",
+            "newspaper_language",
+        ]
+    ).sum()
+    # res.drop_duplicates(ignore_index=True, inplace=True)
 
     return res
 
@@ -33,7 +58,9 @@ def search_synonyms(nlp, word, df, n):
     df.dropna(subset=["text"], inplace=True)
 
     for syn in tqdm(synonyms):
-        result = result.append(
-            df[df["text"].str.contains(syn, case=False, regex=False)]
-        )
+        # Searches synonym
+        res = df[df["text"].str.contains(syn, case=False, regex=False)]
+        # Count appearances of synonym in sentence
+        res["count"] = res["text"].str.count(syn)
+        result = result.append(res)
     return result

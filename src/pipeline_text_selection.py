@@ -26,8 +26,7 @@ logging.basicConfig(
 )
 
 # Setup logger
-HAlogger = logger.get_logger("pipeline")
-HAlogger.debug("Test message")
+HAlogger = logger.get_logger("Text selection")
 
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
 # Data path for Delpher data
@@ -158,7 +157,3 @@ def main():
 
             # Reset list of saved csv to zero
             selected_art = []
-
-
-if __name__ == "__main__":
-    main()
