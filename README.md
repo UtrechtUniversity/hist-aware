@@ -1,4 +1,4 @@
-# HistAware - NLP pipeline
+# Hist-Aware - NLP pipeline
 
 Mining Historical Trajectories of Awareness: A machine learning approach to historicized sentiment mining.
 
