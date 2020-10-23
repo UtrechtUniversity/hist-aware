@@ -3,13 +3,10 @@ import gzip
 import shutil
 
 import pandas as pd
+from loguru import logger
 from itertools import chain
 
-from src import logger
 from src import parsers
-
-HAlogger = logger.get_logger("iterators")
-HAlogger.debug("Test message")
 
 # TODO: add restart to metadata
 
@@ -109,7 +106,7 @@ def iterate_files(save_path, files, restart=False, index_restart=0):
                     )
                 )
             except Exception as e:
-                HAlogger.debug(f"Index: {index}", e.args)
+                logger.debug(f"Index: {index}", e.args)
                 continue
             # Each X, save the file in a .ftr
             if i == save_each:
@@ -132,8 +129,8 @@ def iterate_files(save_path, files, restart=False, index_restart=0):
             # Each 10000 files, print the progress
             if i % progress_each == 0:
                 # clear_output(wait=True)
-                HAlogger.debug("Files parsed: " + str(progress_each * cnt))
-                HAlogger.debug(
+                logger.debug("Files parsed: " + str(progress_each * cnt))
+                logger.debug(
                     "Current file: "
                     + row["article_name"]
                     + " (Index: "
@@ -159,7 +156,7 @@ def iterate_files(save_path, files, restart=False, index_restart=0):
                     )
                 )
             except Exception as e:
-                HAlogger.debug(f"Index: {index}", e.args)
+                logger.debug(f"Index: {index}", e.args)
                 continue
             # Each X, save the file in a .ftr
             if i == save_each:
@@ -181,8 +178,8 @@ def iterate_files(save_path, files, restart=False, index_restart=0):
             # Each 1000 files, print the progress
             if i % progress_each == 0:
                 # clear_output(wait=True)
-                HAlogger.debug("Files parsed: " + str(progress_each * cnt))
-                HAlogger.debug(
+                logger.debug("Files parsed: " + str(progress_each * cnt))
+                logger.debug(
                     "Current file: "
                     + row["article_name"]
                     + "(Index: "
@@ -215,7 +212,7 @@ def iterate_metadata(save_path, files):
                 )
             )
         except Exception:
-            HAlogger.debug(f"Something missing at index: {index}")
+            logger.debug(f"Something missing at index: {index}")
             continue
         # Each X, save the file in a .ftr
         if i == 1000:
@@ -233,8 +230,8 @@ def iterate_metadata(save_path, files):
         # Each 100 files, print the progress
         if i % 100 == 0:
             # clear_output(wait=True)
-            HAlogger.debug("Files parsed: " + str(2000 * cnt))
-            HAlogger.debug(
+            logger.debug("Files parsed: " + str(2000 * cnt))
+            logger.debug(
                 "Current file: "
                 + row["metadata_name"]
                 + " (Index: "

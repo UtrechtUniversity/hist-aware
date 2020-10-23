@@ -7,25 +7,17 @@ import os
 
 from datetime import datetime
 from pathlib import Path
+from loguru import logger
 import pandas as pd
 import numpy as np
-import logging
 from pyfiglet import Figlet
 
 # Import modules
 from src import iterators
-from src import logger
 from src import text_selection
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
-
-logging.basicConfig(
-    format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO
-)
-
-# Setup logger
-HAlogger = logger.get_logger("Text selection")
 
 
 class TextSelection:
@@ -56,7 +48,7 @@ class TextSelection:
         """Iterate directories to catalogue files"""
 
         # Iterate in the directory and retrieve all the xml article names
-        HAlogger.debug("Retrieving article information")
+        logger.debug("Retrieving article information")
         xml_article_names = iterators.iterate_directory(
             dir_path=self.DIR_PATH, file_type=".xml"
         )
@@ -66,11 +58,11 @@ class TextSelection:
         # If true, ungizp the metadata
         # TODO: make the ungizip iterate over the entire data
         if self.UNGIZP:
-            HAlogger.debug("Ungzipping metadata")
+            logger.debug("Ungzipping metadata")
             iterators.ungzip_metdata(dir_path=self.DIR_PATH, file_type=".gz")
 
         # Iterate in the directory and retrieve all the names of the metadata
-        HAlogger.debug("Retrieving metadata information")
+        logger.debug("Retrieving metadata information")
         gz_metadata_files = iterators.iterate_directory_gz(
             dir_path=self.DIR_PATH, file_type=".gz"
         )
@@ -85,19 +77,19 @@ class TextSelection:
         This process is extremely time-intensive, so it should be done only once."""
 
         if self.DATAFILE:
-            HAlogger.debug("Processing and saving metadata to csv files")
+            logger.debug("Processing and saving metadata to csv files")
             iterators.iterate_metadata(
                 save_path=self.SAVE_PATH, files=self.metadata_files
             )
-            HAlogger.debug("Processing and saving articles to csv files")
+            logger.debug("Processing and saving articles to csv files")
             iterators.iterate_files(save_path=self.SAVE_PATH, files=self.article_names)
         else:
-            HAlogger.debug("Skipping processing and saving to csv files")
+            logger.debug("Skipping processing and saving to csv files")
 
     def retrieved_saved_files(self) -> list():
         """Retrieve path and name of saved data"""
 
-        HAlogger.debug("Find path and name of saved articles")
+        logger.debug("Find path and name of saved articles")
         self.csv_articles = iterators.iterate_directory(
             dir_path=os.path.join(self.SAVE_PATH, "processed_articles"),
             file_type=".csv",
@@ -113,7 +105,7 @@ class TextSelection:
             inplace=True,
         )
 
-        HAlogger.debug("Find path and name of saved metadata")
+        logger.debug("Find path and name of saved metadata")
         self.csv_metadata = iterators.iterate_directory(
             dir_path=os.path.join(self.SAVE_PATH, "processed_metadata"),
             file_type=".csv",
@@ -147,7 +139,7 @@ class TextSelection:
 
         # Search synonyms in saved articles
         li = []
-        HAlogger.info("Searching synonyms")
+        logger.info("Searching synonyms")
         for i, row in self.csv_articles.iterrows():
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
@@ -163,7 +155,7 @@ class TextSelection:
                 df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
 
                 for keyword in self.KEYWORDS:
-                    HAlogger.debug(f"Searching synonym {keyword}")
+                    logger.debug(f"Searching synonym {keyword}")
                     selected_art = text_selection.select_articles(
                         nlp=self.NLP, word=keyword, df=df_joined, n=self.NUM_SYNONYMS
                     )

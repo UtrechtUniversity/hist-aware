@@ -5,6 +5,9 @@ data/1950/Times_1950.csv
 data/models/**
 
 .vscode/
+*.bin
+*.vec
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

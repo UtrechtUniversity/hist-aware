@@ -1,20 +1,12 @@
 # nlp_pipeline.py
 import os
 from os.path import dirname
-import logging
 
+from loguru import logger
 import nl_core_news_lg
 
 # Import modules
 from src import pipeline_text_selection
-from src import logger
-
-logging.basicConfig(
-    format="%(asctime)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S", level=logging.INFO
-)
-
-# Setup logger
-HAlogger = logger.get_logger("Pipeline")
 
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
 # Data path for Delpher data
@@ -48,8 +40,12 @@ if __name__ == "__main__":
     # searching synonyms
     # TODO: transform all these functions to manage `chunks` of data!
 
+    # logger.debug("Iterate directories")
     # TextSelection.iterate_directories()
     # `Process_files` works only if DATAFILE is True
+    # logger.debug("Process files")
     # TextSelection.process_files()
+    logger.debug("Retrieved saved files")
     TextSelection.retrieved_saved_files()
+    logger.debug("Search synonyms")
     TextSelection.search_synonyms()

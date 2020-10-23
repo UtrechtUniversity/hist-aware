@@ -4,11 +4,6 @@ from datetime import datetime
 import xml.etree.ElementTree as et
 import xmltodict
 
-from src import logger
-
-HAlogger = logger.get_logger("parsers")
-HAlogger.debug("Test message")
-
 
 def parse_XML_article(path, art_dir, title, index):
     """Parse the input XML file and store the result in a pandas
