@@ -13,8 +13,8 @@ import numpy as np
 from pyfiglet import Figlet
 
 # Import modules
-from src import iterators
-from src import text_selection
+import iterators
+import text_selection
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)

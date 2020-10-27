@@ -5,8 +5,8 @@ import numpy as np
 import re
 
 
-def select_articles(nlp, word, df, n):
-    res = search_synonyms(nlp, word, df, n)
+def select_articles(nlp, word, df):
+    res = search_synonyms(nlp, word, df)
     # Drop duplicates to keep only individual articles
     # but sum the "count" column
     res.groupby(
@@ -38,7 +38,7 @@ def select_articles(nlp, word, df, n):
     return res
 
 
-def search_synonyms(nlp, word, df, n):
+def search_synonyms(nlp, word, df):
     """Find all texts in which a synonym of the word appears.
 
     Takes:
