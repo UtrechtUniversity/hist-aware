@@ -18,9 +18,18 @@ UNGIZP = False
 # Decide whether to process and save articles and metadata data
 DATAFILE = False
 # Keywords to use for the naive text selection
-KEYWORDS = ["olie", "aardgas", "steenkool"]
+KEYWORDS = [
+    "aardolie",
+    "petrolie",
+    "petroleum",
+    "aardgas",
+    "steenkool",
+    "bruinkool",
+    "cokes",
+    "kool",
+]
 # Number of synonyms to retrieve for each keyword, the more the less accurate
-NUM_SYNONYMS = 20
+NUM_SYNONYMS = 10
 # Transformer model to use for the creation of the synonyms
 NLP = nl_core_news_lg.load()
 
@@ -33,7 +42,7 @@ if __name__ == "__main__":
         UNGIZP=UNGIZP,
         DATAFILE=DATAFILE,
         KEYWORDS=KEYWORDS,
-        NUM_SYNONYMS=NUM_SYNONYMS,
+        # NUM_SYNONYMS=NUM_SYNONYMS,
         NLP=NLP,
     )
     # TODO: divide the extraction and save of data from the processing (e.g.)

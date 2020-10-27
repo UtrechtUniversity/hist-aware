@@ -48,18 +48,18 @@ def search_synonyms(nlp, word, df, n):
     """
     appended_data = []
 
-    ms = nlp.vocab.vectors.most_similar(
-        np.asarray([nlp.vocab.vectors[nlp.vocab.strings[word]]]), n=n
-    )
-    synonyms = [nlp.vocab.strings[w] for w in ms[0][0]]
-    print(f"Searching using the following synonyms of {word}:")
-    print(synonyms)
-    df.dropna(subset=["text"], inplace=True)
+    # This is to work with automatically created synonyms
+    # ms = nlp.vocab.vectors.most_similar(
+    #     np.asarray([nlp.vocab.vectors[nlp.vocab.strings[word]]]), n=n
+    # )
+    # synonyms = [nlp.vocab.strings[w] for w in ms[0][0]]
+    # print(f"Searching using the following synonyms of {word}:")
+    # print(synonyms)
 
-    for syn in tqdm(synonyms):
-        # Searches synonym
-        res = df[df["text"].str.contains(syn, case=False, regex=False)].copy()
-        res["count"] = res["text"].str.count(syn, re.I)
-        appended_data.append(res)
+    df.dropna(subset=["text"], inplace=True)
+    # Searches keyword/word
+    res = df[df["text"].str.contains(word, case=False, regex=False)].copy()
+    res["count"] = res["text"].str.count(word, re.I)
+    appended_data.append(res)
     appended_df = pd.concat(appended_data)
     return appended_df

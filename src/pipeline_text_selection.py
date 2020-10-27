@@ -30,7 +30,7 @@ class TextSelection:
         DATAFILE: bool,
         KEYWORDS: str,
         NLP: object,
-        NUM_SYNONYMS,
+        # NUM_SYNONYMS,
     ) -> None:
         self.FILE_PATH = FILE_PATH
         self.DIR_PATH = DIR_PATH
@@ -38,7 +38,7 @@ class TextSelection:
         self.UNGIZP = UNGIZP
         self.DATAFILE = DATAFILE
         self.KEYWORDS = KEYWORDS
-        self.NUM_SYNONYMS = NUM_SYNONYMS
+        # self.NUM_SYNONYMS = NUM_SYNONYMS
         self.NLP = NLP
 
         f = Figlet(font="slant")
@@ -86,7 +86,7 @@ class TextSelection:
         else:
             logger.debug("Skipping processing and saving to csv files")
 
-    def retrieved_saved_files(self) -> list():
+    def retrieved_saved_files(self) -> None:
         """Retrieve path and name of saved data"""
 
         logger.debug("Find path and name of saved articles")
@@ -139,7 +139,7 @@ class TextSelection:
 
         # Search synonyms in saved articles
         li = []
-        logger.info("Searching synonyms")
+        logger.info("Searching keywords")
         for i, row in self.csv_articles.iterrows():
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
@@ -154,10 +154,15 @@ class TextSelection:
                 )
                 df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
 
+                # iterate through list of lists of syn
+
                 for keyword in self.KEYWORDS:
-                    logger.debug(f"Searching synonym {keyword}")
+                    logger.debug(f"Searching dataset using: {keyword}")
                     selected_art = text_selection.select_articles(
-                        nlp=self.NLP, word=keyword, df=df_joined, n=self.NUM_SYNONYMS
+                        nlp=self.NLP,
+                        word=keyword,
+                        df=df_joined,
+                        # n=self.NUM_SYNONYMS
                     )
                     today = datetime.now()
                     NAME = str(today.date()) + "_" + keyword + ".csv"
