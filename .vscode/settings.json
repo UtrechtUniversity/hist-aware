@@ -1,5 +1,6 @@
 {
   "python.envFile": "${workspaceFolder}/.env",
+  "python.pythonPath": "/Users/leonardovida/Library/Caches/pypoetry/virtualenvs/histaware-RplM6c3o-py3.8",
   "python.formatting.provider": "black",
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,

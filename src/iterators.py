@@ -6,7 +6,7 @@ import pandas as pd
 from loguru import logger
 from itertools import chain
 
-from src import parsers
+import parsers
 
 # TODO: add restart to metadata
 
