@@ -6,7 +6,9 @@ from loguru import logger
 import nl_core_news_lg
 
 # Import modules
-from src import pipeline_text_selection
+# sys.path.insert(0, "..")
+
+import pipeline_text_selection
 
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
 # Data path for Delpher data
