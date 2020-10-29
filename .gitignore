@@ -1,8 +1,6 @@
 # Data
-data/1950/**/*
-data/1950/Guard_1950.csv
-data/1950/Times_1950.csv
 data/models/**
+data/**/*
 
 .vscode/
 *.bin

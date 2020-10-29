@@ -1,14 +1,15 @@
 # nlp_pipeline.py
 import os
+import sys
 from os.path import dirname
 
 from loguru import logger
 import nl_core_news_lg
 
 # Import modules
-# sys.path.insert(0, "..")
+sys.path.insert(0, "..")
 
-import pipeline_text_selection
+from src.pipeline_text_selection import TextSelection
 
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
 # Data path for Delpher data

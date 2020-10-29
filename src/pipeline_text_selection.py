@@ -13,8 +13,13 @@ import numpy as np
 from pyfiglet import Figlet
 
 # Import modules
-import iterators
-import text_selection
+from src.iterators import (
+    iterate_directory,
+    iterate_metadata,
+    iterate_files,
+    iterate_directory_gz,
+)
+from src.text_selection import select_articles, search_synonyms
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
