@@ -5,6 +5,7 @@ data/OneDrive_1_29-10-2020/**/*
 data/processed/processed_articles/**/*
 data/processed/processed_metadata/**/*
 data/processed/file_info/**/*
+data/processed/selected_articles/**/*
 
 .vscode/
 *.bin
