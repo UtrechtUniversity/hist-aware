@@ -54,7 +54,7 @@ class TextSelection:
 
     def write_to_disk(self, file_name, file_data):
         """Save function."""
-        file = os.path.join(self.SAVE_PATH, "processed", f"{file_name}.csv")
+        file = os.path.join(self.SAVE_PATH, "selected_articles", f"{file_name}.csv")
         write_mode, header = ("a", False) if os.path.isfile(file) else ("w", True)
 
         if len(file_data) > 0:
@@ -198,7 +198,8 @@ class TextSelection:
             li.append(csv_file)
 
         self.df_metadata = pd.concat(li, axis=0)
-        self.df_metadata.drop(["level_0", "date"], axis=0, inplace=True)
+        # print(self.df_metadata.columns.values)
+        self.df_metadata.drop(columns=["date"], inplace=True)
         self.df_metadata.rename(
             columns={"filepath": "metadata_filepath", "index": "index_metadata"},
             inplace=True,
@@ -211,6 +212,7 @@ class TextSelection:
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
             if i % 10 == 0:
+                logger.debug("Current article csv: ", row["csv_path"])
                 # Iterate 500.000 articles at the time
                 df_articles = pd.concat(li, axis=0)
                 df_articles.sort_values(by=["index"], ascending=True)
@@ -233,7 +235,7 @@ class TextSelection:
                     today = datetime.now()
                     NAME = str(today.date()) + "_" + keyword
 
-                    write_to_disk(file_name=NAME, file_data=selected_art)
+                    self.write_to_disk(file_name=NAME, file_data=selected_art)
 
                     # selected_art.to_csv(
                     #     os.path.join(self.SAVE_PATH, "selected_articles", NAME),
