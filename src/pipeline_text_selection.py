@@ -13,6 +13,7 @@ from loguru import logger
 import pandas as pd
 import numpy as np
 from pyfiglet import Figlet
+from tqdm import tqdm
 
 # Import modules
 from iterators import (
@@ -208,11 +209,13 @@ class TextSelection:
         # Search synonyms in saved articles
         li = []
         logger.info("Searching keywords")
-        for i, row in self.csv_articles.iterrows():
+        for i, row in tqdm(
+            self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
+        ):
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
             if i % 10 == 0:
-                logger.debug("Current article csv: ", row["csv_path"])
+                logger.debug(f"Currently parsed {i*50000} articles")
                 # Iterate 500.000 articles at the time
                 df_articles = pd.concat(li, axis=0)
                 df_articles.sort_values(by=["index"], ascending=True)
@@ -222,10 +225,9 @@ class TextSelection:
                 )
                 df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
 
-                # iterate through list of lists of syn
-
+                # Iterate through list of lists of keywords
                 for keyword in self.KEYWORDS:
-                    logger.debug(f"Searching dataset using: {keyword}")
+                    # logger.debug(f"Searching dataset using: {keyword}")
                     selected_art = select_articles(
                         nlp=self.NLP,
                         word=keyword,
@@ -234,15 +236,7 @@ class TextSelection:
                     )
                     today = datetime.now()
                     NAME = str(today.date()) + "_" + keyword
-
                     self.write_to_disk(file_name=NAME, file_data=selected_art)
-
-                    # selected_art.to_csv(
-                    #     os.path.join(self.SAVE_PATH, "selected_articles", NAME),
-                    #     sep=",",
-                    #     quotechar='"',
-                    #     index=False,
-                    # )
 
                 # Reset list of saved csv to zero
                 selected_art = []
