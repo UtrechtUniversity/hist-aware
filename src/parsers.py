@@ -53,7 +53,7 @@ def parse_XML_metadata(path, met_dir, title, index):
     Takes the filepath, file title and index integer of the df
     """
     metadata = {}
-    dict_metadata = {}
+    list_metadata = []
 
     # Parse the date with regex
     match = re.search(r"\d{4}[/]\d{2}[-]\d{2}", path)
@@ -62,9 +62,9 @@ def parse_XML_metadata(path, met_dir, title, index):
     # Parse DIDL XML
     with open(pathlib.Path(path), "r") as f:
         doc = xmltodict.parse(f.read())
-    temp_data = doc["didl:DIDL"]["didl:Item"]["didl:Component"][0]["didl:Resource"][
-        "srw_dc:dcx"
-    ]
+        temp_data = doc["didl:DIDL"]["didl:Item"]["didl:Component"][0]["didl:Resource"][
+            "srw_dc:dcx"
+        ]
 
     metadata["metadata_title"] = title
     metadata["date"] = date
@@ -82,6 +82,6 @@ def parse_XML_metadata(path, met_dir, title, index):
     metadata["newspaper_issuenumber"] = temp_data["dcx:issuenumber"]
     metadata["newspaper_language"] = temp_data["dc:language"]["#text"]
 
-    dict_metadata[index] = metadata
+    list_metadata.append(metadata)
 
-    return dict_metadata
+    return list_metadata
