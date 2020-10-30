@@ -4,6 +4,7 @@ This script contains the pipeline to select the first naive text
 selection on the delpher dataset
 """
 import os
+from sys import getsizeof
 
 from datetime import datetime
 from pathlib import Path
@@ -13,13 +14,14 @@ import numpy as np
 from pyfiglet import Figlet
 
 # Import modules
-from src.iterators import (
+from iterators import (
     iterate_directory,
     iterate_metadata,
     iterate_files,
+    ungzip_metdata,
     iterate_directory_gz,
 )
-from src.text_selection import select_articles, search_synonyms
+from text_selection import select_articles
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
@@ -32,7 +34,7 @@ class TextSelection:
         DIR_PATH: Path,
         SAVE_PATH: Path,
         UNGIZP: bool,
-        DATAFILE: bool,
+        DATAFILE: dict,
         KEYWORDS: str,
         NLP: object,
         # NUM_SYNONYMS,
@@ -49,53 +51,95 @@ class TextSelection:
         f = Figlet(font="slant")
         print(f.renderText("HistAware"))
 
+    def ungzip_metadata_files(self) -> None:
+        """If true ungizp the metadata files in data/raw"""
+
+        # TODO: make the ungizip iterate over the entire data
+        logger.debug("Ungzipping metadata")
+        ungzip_metdata(dir_path=self.DIR_PATH, file_type=".gz")
+
+    # TODO: Create two functions out of this
     def iterate_directories(self) -> None:
         """Iterate directories to catalogue files"""
+        if not os.path.isfile(
+            os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
+        ):
+            # Iterate in the directory and retrieve all the xml article names
+            logger.debug("Retrieving article information")
+            xml_article_names = iterate_directory(
+                dir_path=self.DIR_PATH, file_type=".xml"
+            )
+            self.article_names = pd.DataFrame.from_dict(xml_article_names)
+            self.article_names.reset_index(inplace=True)
 
-        # Iterate in the directory and retrieve all the xml article names
-        logger.debug("Retrieving article information")
-        xml_article_names = iterators.iterate_directory(
-            dir_path=self.DIR_PATH, file_type=".xml"
-        )
-        self.article_names = pd.DataFrame.from_dict(xml_article_names)
-        self.article_names.reset_index(inplace=True)
-
-        # If true, ungizp the metadata
-        # TODO: make the ungizip iterate over the entire data
-        if self.UNGIZP:
-            logger.debug("Ungzipping metadata")
-            iterators.ungzip_metdata(dir_path=self.DIR_PATH, file_type=".gz")
+            logger.debug(f"Size of directory list {getsizeof(self.article_names)}")
+            self.article_names.to_csv(
+                os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
+            )
+            logger.debug("Articles list saved")
+        else:
+            logger.debug("Articles list already exists. Skipping")
 
         # Iterate in the directory and retrieve all the names of the metadata
-        logger.debug("Retrieving metadata information")
-        gz_metadata_files = iterators.iterate_directory_gz(
-            dir_path=self.DIR_PATH, file_type=".gz"
-        )
-        self.metadata_files = pd.DataFrame.from_dict(gz_metadata_files)
-        self.metadata_files.reset_index(inplace=True)
+        if not os.path.isfile(
+            os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
+        ):
+            logger.debug("Retrieving metadata information")
+            gz_metadata_files = iterate_directory_gz(
+                dir_path=self.DIR_PATH, file_type=".gz"
+            )
+            self.metadata_files = pd.DataFrame.from_dict(gz_metadata_files)
+            self.metadata_files.reset_index(inplace=True)
 
-        # return {"article_names": article_names, "metadata_files": metadata_files}
+            logger.debug(f"Size of metadata list {getsizeof(self.metadata_files)}")
+            self.metadata_files.to_csv(
+                os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
+            )
+            logger.debug("Metadata list saved")
+        else:
+            logger.debug("Articles list already exists. Skipping")
+
+    def process_metdata(self, save_path, files) -> None:
+        if self.DATAFILE["metadata"] == "True":
+            logger.debug("Processing and saving metadata to csv of metadata")
+            iterate_metadata(save_path, files)
+        else:
+            logger.debug("Metadata already processed. Skipping.")
+
+    def process_articles(self, save_path, files) -> None:
+        if self.DATAFILE["files"] == "True":
+            logger.debug("Processing and saving articles to csv of articles")
+            iterate_files(save_path, files)
+        else:
+            logger.debug("Articles already processed. Skipping.")
 
     def process_files(self) -> None:
         """If DATAFILE is True, then process and save the files.
-
         This process is extremely time-intensive, so it should be done only once."""
 
-        if self.DATAFILE:
-            logger.debug("Processing and saving metadata to csv files")
-            iterators.iterate_metadata(
-                save_path=self.SAVE_PATH, files=self.metadata_files
+        if self.DATAFILE["start"] == "True":
+            # Load and process articles
+            self.article_names = pd.read_csv(
+                os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
             )
-            logger.debug("Processing and saving articles to csv files")
-            iterators.iterate_files(save_path=self.SAVE_PATH, files=self.article_names)
+            self.process_articles(save_path=self.SAVE_PATH, files=self.article_names)
+
+            # Load and process metadata
+            self.metadata_files = pd.read_csv(
+                os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
+            )
+            self.process_metdata(save_path=self.SAVE_PATH, files=self.metadata_files)
         else:
-            logger.debug("Skipping processing and saving to csv files")
+            logger.debug(
+                "Skipping processing of both articles and metadata. If you want to \
+                change it check the settings."
+            )
 
     def retrieved_saved_files(self) -> None:
         """Retrieve path and name of saved data"""
 
         logger.debug("Find path and name of saved articles")
-        self.csv_articles = iterators.iterate_directory(
+        self.csv_articles = iterate_directory(
             dir_path=os.path.join(self.SAVE_PATH, "processed_articles"),
             file_type=".csv",
         )
@@ -111,7 +155,7 @@ class TextSelection:
         )
 
         logger.debug("Find path and name of saved metadata")
-        self.csv_metadata = iterators.iterate_directory(
+        self.csv_metadata = iterate_directory(
             dir_path=os.path.join(self.SAVE_PATH, "processed_metadata"),
             file_type=".csv",
         )
@@ -163,7 +207,7 @@ class TextSelection:
 
                 for keyword in self.KEYWORDS:
                     logger.debug(f"Searching dataset using: {keyword}")
-                    selected_art = text_selection.select_articles(
+                    selected_art = select_articles(
                         nlp=self.NLP,
                         word=keyword,
                         df=df_joined,
