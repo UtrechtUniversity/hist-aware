@@ -1,4 +1,5 @@
 # nlp_pipeline.py
+from itertools import filterfalse
 import os
 import sys
 from os.path import dirname
@@ -9,17 +10,23 @@ import nl_core_news_lg
 # Import modules
 sys.path.insert(0, "..")
 
-from src.pipeline_text_selection import TextSelection
+from pipeline_text_selection import TextSelection
 
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
 # Data path for Delpher data
-DIR_PATH = os.path.join(FILE_PATH, "data", "1950", "Delpher")
+DIR_PATH = os.path.join(FILE_PATH, "data", "raw", "delpher")
 # Save path
 SAVE_PATH = os.path.join(FILE_PATH, "data", "processed")
 # Decide whether to ungizip metadata
 UNGIZP = False
 # Decide whether to process and save articles and metadata data
-DATAFILE = False
+DATAFILE = dict(
+    {
+        "start": "True",
+        "metadata": "True",
+        "files": "False",
+    }
+)
 # Keywords to use for the naive text selection
 KEYWORDS = [
     "aardolie",
@@ -38,7 +45,7 @@ NLP = nl_core_news_lg.load()
 
 
 if __name__ == "__main__":
-    TextSelection = pipeline_text_selection.TextSelection(
+    TextSelection = TextSelection(
         FILE_PATH=FILE_PATH,
         DIR_PATH=DIR_PATH,
         SAVE_PATH=SAVE_PATH,
@@ -48,16 +55,24 @@ if __name__ == "__main__":
         # NUM_SYNONYMS=NUM_SYNONYMS,
         NLP=NLP,
     )
-    # TODO: divide the extraction and save of data from the processing (e.g.)
-    # searching synonyms
+    # TODO: stream the search for synonyms? it has good and bad sides.
     # TODO: transform all these functions to manage `chunks` of data!
 
-    # logger.debug("Iterate directories")
-    # TextSelection.iterate_directories()
-    # `Process_files` works only if DATAFILE is True
-    # logger.debug("Process files")
-    # TextSelection.process_files()
-    logger.debug("Retrieved saved files")
-    TextSelection.retrieved_saved_files()
-    logger.debug("Search synonyms")
-    TextSelection.search_synonyms()
+    # Ungzip metadata files
+    if UNGIZP is True:
+        logger.debug("Ungzip metadata")
+        TextSelection.ungzip_metadata_files()
+
+    # If folder file_info is empty, create list of files
+    logger.debug("Iterate directories")
+    TextSelection.iterate_directories()
+
+    logger.debug("Process files")
+    TextSelection.process_files()
+
+    # Retrieval and searching should go togther as it cannot be kept in memory
+    # logger.debug("Retrieved saved files")
+    # TextSelection.retrieved_saved_files()
+
+    # logger.debug("Search synonyms")
+    # TextSelection.search_synonyms()
