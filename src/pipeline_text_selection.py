@@ -5,6 +5,7 @@ selection on the delpher dataset
 """
 import os
 from sys import getsizeof
+import csv
 
 from datetime import datetime
 from pathlib import Path
@@ -50,6 +51,20 @@ class TextSelection:
 
         f = Figlet(font="slant")
         print(f.renderText("HistAware"))
+
+    def write_to_disk(self, file_name, file_data):
+        """Save function."""
+        file = os.path.join(self.SAVE_PATH, "processed", f"{file_name}.csv")
+        write_mode, header = ("a", False) if os.path.isfile(file) else ("w", True)
+
+        if len(file_data) > 0:
+            pd.DataFrame(file_data).to_csv(
+                path_or_buf=file,
+                index=False,
+                mode=write_mode,
+                header=header,
+                quoting=csv.QUOTE_MINIMAL,
+            )
 
     def ungzip_metadata_files(self) -> None:
         """If true ungizp the metadata files in data/raw"""
@@ -119,16 +134,22 @@ class TextSelection:
 
         if self.DATAFILE["start"] == "True":
             # Load and process articles
+            processed_article_path = os.path.join(self.SAVE_PATH, "processed_articles")
             self.article_names = pd.read_csv(
                 os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
             )
-            self.process_articles(save_path=self.SAVE_PATH, files=self.article_names)
+            self.process_articles(
+                save_path=processed_article_path, files=self.article_names
+            )
 
             # Load and process metadata
+            processed_metadata_path = os.path.join(self.SAVE_PATH, "processed_metadata")
             self.metadata_files = pd.read_csv(
                 os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
             )
-            self.process_metdata(save_path=self.SAVE_PATH, files=self.metadata_files)
+            self.process_metdata(
+                save_path=processed_metadata_path, files=self.metadata_files
+            )
         else:
             logger.debug(
                 "Skipping processing of both articles and metadata. If you want to \
@@ -138,35 +159,33 @@ class TextSelection:
     def retrieved_saved_files(self) -> None:
         """Retrieve path and name of saved data"""
 
-        logger.debug("Find path and name of saved articles")
+        logger.debug("Find path and name of saved info about articles (csv)")
         self.csv_articles = iterate_directory(
             dir_path=os.path.join(self.SAVE_PATH, "processed_articles"),
             file_type=".csv",
         )
         self.csv_articles = pd.DataFrame(self.csv_articles)
         self.csv_articles.rename(
-            {
+            columns={
                 "article_name": "csv_name",
                 "article_path": "csv_path",
                 "article_dir": "csv_dir",
             },
-            axis=1,
             inplace=True,
         )
 
-        logger.debug("Find path and name of saved metadata")
+        logger.debug("Find path and name of saved info about metadata (csv)")
         self.csv_metadata = iterate_directory(
             dir_path=os.path.join(self.SAVE_PATH, "processed_metadata"),
             file_type=".csv",
         )
         self.csv_metadata = pd.DataFrame(self.csv_metadata)
         self.csv_metadata.rename(
-            {
+            columns={
                 "article_name": "csv_name",
                 "article_path": "csv_path",
                 "article_dir": "csv_dir",
             },
-            axis=1,
             inplace=True,
         )
 
@@ -179,10 +198,9 @@ class TextSelection:
             li.append(csv_file)
 
         self.df_metadata = pd.concat(li, axis=0)
-        self.df_metadata.drop(["level_0", "date"], axis=1, inplace=True)
+        self.df_metadata.drop(["level_0", "date"], axis=0, inplace=True)
         self.df_metadata.rename(
-            {"filepath": "metadata_filepath", "index": "index_metadata"},
-            axis=1,
+            columns={"filepath": "metadata_filepath", "index": "index_metadata"},
             inplace=True,
         )
 
@@ -192,13 +210,12 @@ class TextSelection:
         for i, row in self.csv_articles.iterrows():
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
-            if i % 5 == 0:
-                # Iterate 250.000 articles at the time
+            if i % 10 == 0:
+                # Iterate 500.000 articles at the time
                 df_articles = pd.concat(li, axis=0)
                 df_articles.sort_values(by=["index"], ascending=True)
                 df_articles.rename(
-                    {"filepath": "article_filepath", "index": "index_article"},
-                    axis=1,
+                    columns={"filepath": "article_filepath", "index": "index_article"},
                     inplace=True,
                 )
                 df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
@@ -214,14 +231,16 @@ class TextSelection:
                         # n=self.NUM_SYNONYMS
                     )
                     today = datetime.now()
-                    NAME = str(today.date()) + "_" + keyword + ".csv"
+                    NAME = str(today.date()) + "_" + keyword
 
-                    selected_art.to_csv(
-                        os.path.join(self.SAVE_PATH, "selected_articles", NAME),
-                        sep=",",
-                        quotechar='"',
-                        index=False,
-                    )
+                    write_to_disk(file_name=NAME, file_data=selected_art)
+
+                    # selected_art.to_csv(
+                    #     os.path.join(self.SAVE_PATH, "selected_articles", NAME),
+                    #     sep=",",
+                    #     quotechar='"',
+                    #     index=False,
+                    # )
 
                 # Reset list of saved csv to zero
                 selected_art = []

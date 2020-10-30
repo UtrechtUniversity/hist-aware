@@ -23,7 +23,7 @@ UNGIZP = False
 DATAFILE = dict(
     {
         "start": "True",
-        "metadata": "True",
+        "metadata": "False",
         "files": "False",
     }
 )
@@ -71,8 +71,8 @@ if __name__ == "__main__":
     TextSelection.process_files()
 
     # Retrieval and searching should go togther as it cannot be kept in memory
-    # logger.debug("Retrieved saved files")
-    # TextSelection.retrieved_saved_files()
+    logger.debug("Retrieved saved files")
+    TextSelection.retrieved_saved_files()
 
-    # logger.debug("Search synonyms")
-    # TextSelection.search_synonyms()
+    logger.debug("Search synonyms")
+    TextSelection.search_synonyms()
