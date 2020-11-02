@@ -19,13 +19,13 @@ DIR_PATH = os.path.join(FILE_PATH, "data", "raw", "delpher")
 # Save path
 SAVE_PATH = os.path.join(FILE_PATH, "data", "processed")
 # Decide whether to ungizip metadata
-UNGIZP = True
+UNGIZP = False
 # Decide whether to process and save articles and metadata data
 DATAFILE = dict(
     {
-        "start": "True",
-        "metadata": "True",
-        "files": "True",
+        "start": "False",
+        "metadata": "False",
+        "files": "False",
     }
 )
 # Keywords to use for the naive text selection
@@ -73,8 +73,8 @@ if __name__ == "__main__":
     TextSelection.process_files()
 
     # Retrieval and searching should go togther as it cannot be kept in memory
-    # logger.debug("Retrieved saved files")
-    # TextSelection.retrieved_saved_files()
+    logger.debug("Retrieved saved files")
+    TextSelection.retrieved_saved_files()
 
-    # logger.debug("Search synonyms")
-    # TextSelection.search_synonyms()
+    logger.debug("Search synonyms")
+    TextSelection.search_synonyms()

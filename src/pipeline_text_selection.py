@@ -200,6 +200,7 @@ class TextSelection:
         """Using the processed and saved data, search the synonyms"""
         li = []
 
+        # Read all the metadata into one file
         for index, row in self.csv_metadata.iterrows():
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
