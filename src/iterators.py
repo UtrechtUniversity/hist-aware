@@ -5,8 +5,23 @@ import shutil
 import pandas as pd
 from loguru import logger
 from itertools import chain
+from tqdm import tqdm
 
-import parsers
+from src import parsers
+
+
+def ungzip_metdata(dir_path, file_type):
+    """Iterate over the `path_dir` and its children and
+    ungizp the .gz metadata files found.
+    """
+
+    for subdir, dirs, files in os.walk(dir_path, topdown=True):
+        for file in files:
+            # logger.debug(f"{file}")
+            filepath = subdir + os.sep + file
+            if filepath.endswith(str(file_type)):
+                with gzip.open(filepath, "rb") as f, open(filepath + ".xml", "wb") as r:
+                    shutil.copyfileobj(f, r, 65536)
 
 
 def iterate_directory(dir_path, file_type):
@@ -63,18 +78,14 @@ def iterate_directory_gz(dir_path, file_type):
     return list_gzs
 
 
-def ungzip_metdata(dir_path, file_type):
-    """Iterate over the `path_dir` and its children and
-    ungizp the .gz metadata files found.
-    """
-
-    for subdir, dirs, files in os.walk(dir_path, topdown=True):
-        for file in files:
-            # logger.debug(f"{file}")
-            filepath = subdir + os.sep + file
-            if filepath.endswith(str(file_type)):
-                with gzip.open(filepath, "rb") as f, open(filepath + ".xml", "wb") as r:
-                    shutil.copyfileobj(f, r, 65536)
+def _save_to_csv(save_path, data_list_name, pre_i, cur_i, articles):
+    # TODO: Here potential path problem
+    file_path = os.path.join(
+        save_path,
+        data_list_name + str(pre_i) + "_" + str(cur_i) + ".csv",
+    )
+    main = pd.DataFrame(list(chain.from_iterable(articles)))
+    main.to_csv(file_path)
 
 
 def iterate_files(
@@ -94,12 +105,11 @@ def iterate_files(
     list_articles = []
 
     if restart is False:
-        main = None
         previous_i = 0
         current_i = 0
         i = 0
         cnt = 0
-        for index, row in files.iterrows():
+        for index, row in tqdm(files.iterrows(), total=files.shape[0]):
             try:
                 list_articles.append(
                     parsers.parse_XML_article(
@@ -115,18 +125,9 @@ def iterate_files(
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
-                # TODO: Here potential path problem
-                file_path = os.path.join(
-                    save_path,
-                    "processed_data_list_"
-                    + str(previous_i)
-                    + "_"
-                    + str(current_i)
-                    + ".csv",
+                _save_to_csv(
+                    save_path, "articles", previous_i, current_i, list_articles
                 )
-                main = pd.DataFrame(list(chain.from_iterable(list_articles)))
-                main.to_csv(file_path)
-                main = None
                 list_articles = []
                 previous_i = current_i
                 i = 0
@@ -142,15 +143,24 @@ def iterate_files(
                     + ")"
                 )
                 cnt += 1
+            if index == len(files) - 1:
+                current_i = current_i + i
+                _save_to_csv(
+                    save_path, "articles", previous_i, current_i, list_articles
+                )
+                list_articles = []
+                previous_i = current_i
+                i = 0
             i += 1
     if restart is True:
-        main = None
         previous_i = index_restart
         current_i = index_restart
         i = 0
         cnt = index_restart / progress_each
         list_articles = []
-        for index, row in files.iloc[index_restart:].iterrows():
+        for index, row in tqdm(
+            files.iloc[index_restart:].iterrows(), total=files.shape[0]
+        ):
             try:
                 list_articles.append(
                     parsers.parse_XML_article(
@@ -166,17 +176,9 @@ def iterate_files(
             # Each X, save the file in a .ftr
             if i == save_each:
                 current_i = current_i + i
-                file_path = os.path.join(
-                    save_path,
-                    "processed_data_list_"
-                    + str(previous_i)
-                    + "_"
-                    + str(current_i)
-                    + ".csv",
+                _save_to_csv(
+                    save_path, "articles", previous_i, current_i, list_articles
                 )
-                main = pd.DataFrame(list(chain.from_iterable(list_articles)))
-                main.to_csv(file_path)
-                main = None
                 list_articles = []
                 previous_i = current_i
                 i = 0
@@ -192,6 +194,14 @@ def iterate_files(
                     + ")"
                 )
                 cnt += 1
+            if index == len(files) - 1:
+                current_i = current_i + i
+                _save_to_csv(
+                    save_path, "articles", previous_i, current_i, list_articles
+                )
+                list_articles = []
+                previous_i = current_i
+                i = 0
             i += 1
 
 
@@ -207,13 +217,12 @@ def iterate_metadata(
     list_metadata = []
 
     if restart is False:
-        main = None
         previous_i = 0
         current_i = 0
         i = 0
         cnt = 0
         list_metadata = []
-        for index, row in files.iterrows():
+        for index, row in tqdm(files.iterrows(), total=files.shape[0]):
             try:
                 list_metadata.append(
                     parsers.parse_XML_metadata(
@@ -229,18 +238,9 @@ def iterate_metadata(
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
-                file_path = os.path.join(
-                    save_path,
-                    "processed_metadata_"
-                    + str(previous_i)
-                    + "_"
-                    + str(current_i)
-                    + ".csv",
+                _save_to_csv(
+                    save_path, "metadata", previous_i, current_i, list_metadata
                 )
-                main = pd.DataFrame(list(chain.from_iterable(list_metadata)))
-                # main = pd.DataFrame.from_dict(dict_metadata).T.reset_index()
-                main.to_csv(file_path)
-                main = None
                 list_metadata = []
                 previous_i = current_i
                 i = 0
@@ -256,9 +256,16 @@ def iterate_metadata(
                     + ")"
                 )
                 cnt += 1
+            if index == len(files) - 1:
+                current_i = current_i + i
+                _save_to_csv(
+                    save_path, "metadata", previous_i, current_i, list_metadata
+                )
+                list_metadata = []
+                previous_i = current_i
+                i = 0
             i += 1
     if restart is True:
-        main = None
         previous_i = index_restart
         current_i = index_restart
         i = 0
@@ -280,18 +287,9 @@ def iterate_metadata(
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
-                file_path = os.path.join(
-                    save_path,
-                    "processed_metadata_"
-                    + str(previous_i)
-                    + "_"
-                    + str(current_i)
-                    + ".csv",
+                _save_to_csv(
+                    save_path, "metadata", previous_i, current_i, list_metadata
                 )
-                main = pd.DataFrame(list(chain.from_iterable(list_metadata)))
-                # main = pd.DataFrame.from_dict(dict_metadata).T.reset_index()
-                main.to_csv(file_path)
-                main = None
                 list_metadata = []
                 previous_i = current_i
                 i = 0
@@ -307,4 +305,12 @@ def iterate_metadata(
                     + ")"
                 )
                 cnt += 1
+            if index == len(files) - 1:
+                current_i = current_i + i
+                _save_to_csv(
+                    save_path, "metadata", previous_i, current_i, list_metadata
+                )
+                list_metadata = []
+                previous_i = current_i
+                i = 0
             i += 1

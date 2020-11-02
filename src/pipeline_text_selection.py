@@ -39,23 +39,35 @@ class TextSelection:
         DATAFILE: dict,
         KEYWORDS: str,
         NLP: object,
-        # NUM_SYNONYMS,
+        DECADE: str,
     ) -> None:
         self.FILE_PATH = FILE_PATH
+        self.DECADE = DECADE
         self.DIR_PATH = DIR_PATH
         self.SAVE_PATH = SAVE_PATH
         self.UNGIZP = UNGIZP
         self.DATAFILE = DATAFILE
         self.KEYWORDS = KEYWORDS
-        # self.NUM_SYNONYMS = NUM_SYNONYMS
         self.NLP = NLP
+
+        self.RAW_DECADE = os.path.join(self.DIR_PATH, self.DECADE)
+        self.PROC_ART_DECADE = os.path.join(
+            self.SAVE_PATH, "processed_articles", self.DECADE
+        )
+        self.PROC_MET_DECADE = os.path.join(
+            self.SAVE_PATH, "processed_metadata", self.DECADE
+        )
+        self.SELECTED_DECADE = os.path.join(
+            self.SAVE_PATH, "selected_articles", self.DECADE
+        )
+        self.INFO_DECADE = os.path.join(self.SAVE_PATH, "file_info", self.DECADE)
 
         f = Figlet(font="slant")
         print(f.renderText("HistAware"))
 
     def write_to_disk(self, file_name, file_data):
         """Save function."""
-        file = os.path.join(self.SAVE_PATH, "selected_articles", f"{file_name}.csv")
+        file = os.path.join(self.SELECTED_DECADE, f"{file_name}.csv")
         write_mode, header = ("a", False) if os.path.isfile(file) else ("w", True)
 
         if len(file_data) > 0:
@@ -72,44 +84,40 @@ class TextSelection:
 
         # TODO: make the ungizip iterate over the entire data
         logger.debug("Ungzipping metadata")
-        ungzip_metdata(dir_path=self.DIR_PATH, file_type=".gz")
+        ungzip_metdata(dir_path=self.RAW_DECADE, file_type=".gz")
 
     # TODO: Create two functions out of this
     def iterate_directories(self) -> None:
         """Iterate directories to catalogue files"""
-        if not os.path.isfile(
-            os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
-        ):
+        if not os.path.isfile(os.path.join(self.INFO_DECADE, "article_info.csv")):
             # Iterate in the directory and retrieve all the xml article names
             logger.debug("Retrieving article information")
             xml_article_names = iterate_directory(
-                dir_path=self.DIR_PATH, file_type=".xml"
+                dir_path=self.RAW_DECADE, file_type=".xml"
             )
             self.article_names = pd.DataFrame.from_dict(xml_article_names)
             self.article_names.reset_index(inplace=True)
 
             logger.debug(f"Size of directory list {getsizeof(self.article_names)}")
             self.article_names.to_csv(
-                os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
+                os.path.join(self.INFO_DECADE, "article_info.csv")
             )
             logger.debug("Articles list saved")
         else:
             logger.debug("Articles list already exists. Skipping")
 
         # Iterate in the directory and retrieve all the names of the metadata
-        if not os.path.isfile(
-            os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
-        ):
+        if not os.path.isfile(os.path.join(self.INFO_DECADE, "metadata_info.csv")):
             logger.debug("Retrieving metadata information")
             gz_metadata_files = iterate_directory_gz(
-                dir_path=self.DIR_PATH, file_type=".gz"
+                dir_path=self.RAW_DECADE, file_type=".gz"
             )
             self.metadata_files = pd.DataFrame.from_dict(gz_metadata_files)
             self.metadata_files.reset_index(inplace=True)
 
             logger.debug(f"Size of metadata list {getsizeof(self.metadata_files)}")
             self.metadata_files.to_csv(
-                os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
+                os.path.join(self.INFO_DECADE, "metadata_info.csv")
             )
             logger.debug("Metadata list saved")
         else:
@@ -135,21 +143,19 @@ class TextSelection:
 
         if self.DATAFILE["start"] == "True":
             # Load and process articles
-            processed_article_path = os.path.join(self.SAVE_PATH, "processed_articles")
             self.article_names = pd.read_csv(
-                os.path.join(self.SAVE_PATH, "file_info", "article_info.csv")
+                os.path.join(self.INFO_DECADE, "article_info.csv")
             )
             self.process_articles(
-                save_path=processed_article_path, files=self.article_names
+                save_path=self.PROC_ART_DECADE, files=self.article_names
             )
 
             # Load and process metadata
-            processed_metadata_path = os.path.join(self.SAVE_PATH, "processed_metadata")
             self.metadata_files = pd.read_csv(
-                os.path.join(self.SAVE_PATH, "file_info", "metadata_info.csv")
+                os.path.join(self.INFO_DECADE, "metadata_info.csv")
             )
             self.process_metdata(
-                save_path=processed_metadata_path, files=self.metadata_files
+                save_path=self.PROC_MET_DECADE, files=self.metadata_files
             )
         else:
             logger.debug(
@@ -162,7 +168,7 @@ class TextSelection:
 
         logger.debug("Find path and name of saved info about articles (csv)")
         self.csv_articles = iterate_directory(
-            dir_path=os.path.join(self.SAVE_PATH, "processed_articles"),
+            dir_path=os.path.join(self.PROC_ART_DECADE),
             file_type=".csv",
         )
         self.csv_articles = pd.DataFrame(self.csv_articles)
@@ -177,7 +183,7 @@ class TextSelection:
 
         logger.debug("Find path and name of saved info about metadata (csv)")
         self.csv_metadata = iterate_directory(
-            dir_path=os.path.join(self.SAVE_PATH, "processed_metadata"),
+            dir_path=os.path.join(self.PROC_MET_DECADE),
             file_type=".csv",
         )
         self.csv_metadata = pd.DataFrame(self.csv_metadata)
