@@ -224,6 +224,26 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "dask"
+version = "2.30.0"
+description = "Parallel PyData with Task Scheduling"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+pyyaml = "*"
+
+[package.extras]
+array = ["numpy (>=1.13.0)", "toolz (>=0.8.2)"]
+bag = ["cloudpickle (>=0.2.2)", "fsspec (>=0.6.0)", "toolz (>=0.8.2)", "partd (>=0.3.10)"]
+complete = ["bokeh (>=1.0.0,!=2.0.0)", "cloudpickle (>=0.2.2)", "distributed (>=2.0)", "fsspec (>=0.6.0)", "numpy (>=1.13.0)", "pandas (>=0.23.0)", "partd (>=0.3.10)", "toolz (>=0.8.2)"]
+dataframe = ["numpy (>=1.13.0)", "pandas (>=0.23.0)", "toolz (>=0.8.2)", "partd (>=0.3.10)", "fsspec (>=0.6.0)"]
+delayed = ["cloudpickle (>=0.2.2)", "toolz (>=0.8.2)"]
+diagnostics = ["bokeh (>=1.0.0,!=2.0.0)"]
+distributed = ["distributed (>=2.0)"]
+
+[[package]]
 name = "decorator"
 version = "4.4.2"
 description = "Decorators for Humans"
@@ -451,6 +471,18 @@ description = "Internationalized Domain Names in Applications (IDNA)"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
+name = "inexactsearch"
+version = "1.0.2"
+description = "Fuzzy String search algorithm using Soundex for Indian language"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+silpa_common = ">=0.3"
+soundex = ">=1.0"
 
 [[package]]
 name = "iniconfig"
@@ -1593,6 +1625,18 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "repoze.lru"
+version = "0.7"
+description = "A tiny LRU cache implementation and decorator"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+docs = ["sphinx"]
+testing = ["coverage", "nose"]
+
+[[package]]
 name = "requests"
 version = "2.24.0"
 description = "Python HTTP for Humans."
@@ -1727,6 +1771,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "silpa-common"
+version = "0.3"
+description = "Common functions for SILPA and related modules"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+"repoze.lru" = "*"
+
+[[package]]
 name = "six"
 version = "1.15.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1759,6 +1814,17 @@ description = "A pure Python implementation of a sliding window memory map manag
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
+name = "soundex"
+version = "1.1.3"
+description = "Soundex algorith implementation for English and Indian languages"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+silpa_common = ">=0.3"
 
 [[package]]
 name = "spacy"
@@ -1795,6 +1861,17 @@ ja = ["sudachipy (>=0.4.5)", "sudachidict-core (>=20200330)"]
 ko = ["natto-py (==0.9.0)"]
 lookups = ["spacy-lookups-data (>=0.3.2,<0.4.0)"]
 th = ["pythainlp (>=2.0)"]
+
+[[package]]
+name = "spellchecker"
+version = "0.4"
+description = "Indian Language Spellchecker Library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+inexactsearch = "*"
 
 [[package]]
 name = "srsly"
@@ -2194,7 +2271,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b2080a32577c1173021269599782b1862601e676a5d61c98f353a72825d4d5b8"
+content-hash = "f6c01281dbefd4345524027757578551012064bf78146745cfaaa7aa88afe27c"
 
 [metadata.files]
 absl-py = [
@@ -2386,6 +2463,10 @@ cython = [
     {file = "Cython-0.29.14-cp38-cp38-win_amd64.whl", hash = "sha256:a0f495a4fe5278aab278feee35e6102efecde5176a8a74dd28c28e3fc5c8d7c7"},
     {file = "Cython-0.29.14.tar.gz", hash = "sha256:e4d6bb8703d0319eb04b7319b12ea41580df44fd84d83ccda13ea463c6801414"},
 ]
+dask = [
+    {file = "dask-2.30.0-py3-none-any.whl", hash = "sha256:4c215aa55951f570b5a294b2ce964ed801c6efd766231c53447460e60f73ea14"},
+    {file = "dask-2.30.0.tar.gz", hash = "sha256:a1669022e25de99b227c3d83da4801f032415962dac431099bf0534648e41a54"},
+]
 decorator = [
     {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
     {file = "decorator-4.4.2.tar.gz", hash = "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"},
@@ -2557,6 +2638,9 @@ hnswlib = [
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
+]
+inexactsearch = [
+    {file = "inexactsearch-1.0.2.tar.gz", hash = "sha256:b7df09c46e1ea73996449ceb4df265483e4dc6b61dac2ea4df6f2e5ad8d53b75"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
@@ -3254,6 +3338,10 @@ regex = [
     {file = "regex-2020.10.15-cp39-cp39-win_amd64.whl", hash = "sha256:a51e51eecdac39a50ede4aeed86dbef4776e3b73347d31d6ad0bc9648ba36049"},
     {file = "regex-2020.10.15.tar.gz", hash = "sha256:d25f5cca0f3af6d425c9496953445bf5b288bb5b71afc2b8308ad194b714c159"},
 ]
+"repoze.lru" = [
+    {file = "repoze.lru-0.7-py3-none-any.whl", hash = "sha256:f77bf0e1096ea445beadd35f3479c5cff2aa1efe604a133e67150bc8630a62ea"},
+    {file = "repoze.lru-0.7.tar.gz", hash = "sha256:0429a75e19380e4ed50c0694e26ac8819b4ea7851ee1fc7583c8572db80aff77"},
+]
 requests = [
     {file = "requests-2.24.0-py2.py3-none-any.whl", hash = "sha256:fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898"},
     {file = "requests-2.24.0.tar.gz", hash = "sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b"},
@@ -3346,6 +3434,9 @@ sentencepiece = [
     {file = "sentencepiece-0.1.91-cp38-cp38-win_amd64.whl", hash = "sha256:c2a004470d388272d6c17ca160ef73d6ea1ffcddc345771d817ece5c85d85dcb"},
     {file = "sentencepiece-0.1.91.tar.gz", hash = "sha256:f9700cf607ea064d9fad34c751fbf49953dcc56fe68c54b277481aa0aec5c18f"},
 ]
+silpa-common = [
+    {file = "silpa_common-0.3.tar.gz", hash = "sha256:d4a4366193fd606fdcbf6d6e996a57a8bed9ff54ec8e2f798d2b7bc885dde3fd"},
+]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
@@ -3356,6 +3447,9 @@ smart-open = [
 smmap = [
     {file = "smmap-3.0.4-py2.py3-none-any.whl", hash = "sha256:54c44c197c819d5ef1991799a7e30b662d1e520f2ac75c9efbeb54a742214cf4"},
     {file = "smmap-3.0.4.tar.gz", hash = "sha256:9c98bbd1f9786d22f14b3d4126894d56befb835ec90cef151af566c7e19b5d24"},
+]
+soundex = [
+    {file = "soundex-1.1.3.tar.gz", hash = "sha256:f837692afab3dc4f0132a36d8e8a8384f6ac8349fffdf5103291c3d1c2d48ad3"},
 ]
 spacy = [
     {file = "spacy-2.3.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:f7b3a17730786979f964b16ee1e4a9146cd05016f100afb274dd66336dfc39eb"},
@@ -3368,6 +3462,9 @@ spacy = [
     {file = "spacy-2.3.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:3bafcc134c340c5d7556612344d2844522d452b99a21f2b0a9b640f6c55f1110"},
     {file = "spacy-2.3.2-cp38-cp38-win_amd64.whl", hash = "sha256:4944a1118f6dbb49201749d72527b749f74032e1026ddf387bc3a7e172ff0300"},
     {file = "spacy-2.3.2.tar.gz", hash = "sha256:818de26e0e383f64ccbe3db185574920de05923d8deac8bbb12113b9e33cee1f"},
+]
+spellchecker = [
+    {file = "spellchecker-0.4.tar.gz", hash = "sha256:7ebe5480641d2fa555e4a9d0592e6f6866d095c37c5563e38a349f8ce26358c7"},
 ]
 srsly = [
     {file = "srsly-1.0.2-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:7c553a709fd56a37a07f969e849f55a0aeabaeb7677bebc588a640ab8ec134aa"},
