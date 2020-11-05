@@ -1,44 +1,54 @@
-import io
-from collections import defaultdict
-from string import punctuation
-import os, os.path
-import re
+# example.py
 import sys
+import time
+
+from src import preprocess
+from src import tfidf
+
+import pandas as pd
+from pandarallel import pandarallel
 
 sys.path.insert(0, "..")
 
-import numpy as np
-import pandas as pd
-import spacy
-from spacy.lemmatizer import Lemmatizer
-import nl_core_news_lg
-from spacy.lang.nl.stop_words import STOP_WORDS
-from tqdm import tqdm_notebook as tqdm
-from pprint import pprint
-import nltk
+ct = preprocess.TextCleaner()
 
-from src import iterators
+# Load
+df = pd.read_csv("./notebooks/test_df.csv")
 
-from src import preprocess
+# Preprocess step
 
-# import dask.dataframe as dd
-# from dask.multiprocessing import get
-import time
-
-df = pd.read_csv("./notebooks/test_df")
-
+# This step can be done with pandarallel or dask
 start_time = time.time()
-ct = preprocess.CleanText()
-
-a = df["text"].apply(ct.do_all)
+pandarallel.initialize(progress_bar=True)
+# df["text_wop"] = df["text"].parallel_apply(ct.preprocess)
+df["text_clean"] = df["text"].apply(ct.preprocess)
 print("--- %s seconds ---" % (time.time() - start_time))
 
-print(a)
-# def dask_this(df):
-#     res = df["docs"].apply(ct.do_all)
-#     return res
+# Save step
+df.to_csv("./notebooks/to_label_final_2.csv", sep=",")
 
+#  TFIDF
+# Encode label categories to numbers
+# enc = LabelEncoder()
+# df = pd.read_csv("to_label_final.csv", sep=";")
+# df["label"] = enc.fit_transform(df["label"])
+# labels = list(enc.classes_)
 
-# ddata = dd.from_pandas(df, npartitions=10)
+# # Train-test split and vectorize
+# X_train, X_test, y_train, y_test = train_test_split(
+#     df["text_wop"], df["label"], test_size=0.2, shuffle=True
+# )
+# X_train_vec, X_test_vec = tfidf.vectorize(TfidfVectorizer(), X_train, X_test)
 
-# res = ddata.map_partitions(dask_this).compute(scheduler="processes", num_workers=10)
+# Preparing to make a pipeline
+# models = {
+#     "Naive Bayes": MultinomialNB(),
+#     "Gradient Boosting": GradientBoostingClassifier(),
+# }
+
+# params = {
+#     "Naive Bayes": {"alpha": [0.5, 1], "fit_prior": [True, False]},
+#     "Gradient Boosting": {"learning_rate": [0.05, 0.1], "min_samples_split": [2, 5]},
+# }
+
+# tfidf.grid_search(models, params, X_train_vec, X_test_vec, y_train, y_test)
