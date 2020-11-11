@@ -38,7 +38,8 @@ class TextSelection:
         UNGIZP: bool,
         DATAFILE: dict,
         KEYWORDS: str,
-        NLP: object,
+        EXCL_WORDS: str,
+        TOPIC: str,
         DECADE: str,
     ) -> None:
         self.FILE_PATH = FILE_PATH
@@ -48,7 +49,8 @@ class TextSelection:
         self.UNGIZP = UNGIZP
         self.DATAFILE = DATAFILE
         self.KEYWORDS = KEYWORDS
-        self.NLP = NLP
+        self.EXCL_WORDS = EXCL_WORDS
+        self.TOPIC = TOPIC
 
         self.RAW_DECADE = os.path.join(self.DIR_PATH, self.DECADE)
         self.PROC_ART_DECADE = os.path.join(
@@ -216,14 +218,14 @@ class TextSelection:
         # Search synonyms in saved articles
         li = []
         logger.info("Searching keywords")
+        # Load processed articles iteratively
         for i, row in tqdm(
             self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
         ):
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
-            if i % 10 == 0:
+            if i % 20 == 0:
                 logger.debug(f"Currently parsed {i*50000} articles")
-                # Iterate 500.000 articles at the time
                 df_articles = pd.concat(li, axis=0)
                 df_articles.sort_values(by=["index"], ascending=True)
                 df_articles.rename(
@@ -232,18 +234,17 @@ class TextSelection:
                 )
                 df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
 
-                # Iterate through list of lists of keywords
-                for keyword in self.KEYWORDS:
-                    # logger.debug(f"Searching dataset using: {keyword}")
-                    selected_art = select_articles(
-                        nlp=self.NLP,
-                        word=keyword,
-                        df=df_joined,
-                        # n=self.NUM_SYNONYMS
-                    )
-                    today = datetime.now()
-                    NAME = str(today.date()) + "_" + keyword
-                    self.write_to_disk(file_name=NAME, file_data=selected_art)
+                # Search for keywords in loaded csvs
+                selected_art = select_articles(
+                    words=self.KEYWORDS,
+                    excl_words=self.EXCL_WORDS,
+                    df=df_joined,
+                )
+                today = datetime.now()
+                NAME = str(today.date()) + "_" + self.TOPIC + "_" + str(i)
+                self.write_to_disk(file_name=NAME, file_data=selected_art)
 
-                # Reset list of saved csv to zero
+                # Reset for next iteration
                 selected_art = []
+                df_articles = pd.DataFrame
+                li = []

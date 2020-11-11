@@ -5,8 +5,8 @@ import numpy as np
 import re
 
 
-def select_articles(nlp, word, df):
-    res = search_synonyms(nlp, word, df)
+def select_articles(words, excl_words, df):
+    res = search_synonyms(words, excl_words, df)
     # Drop duplicates to keep only individual articles
     # but sum the "count" column
     res.groupby(
@@ -38,7 +38,7 @@ def select_articles(nlp, word, df):
     return res
 
 
-def search_synonyms(nlp, word, df):
+def search_synonyms(words, excl_words, df):
     """Find all texts in which a synonym of the word appears.
 
     Takes:
@@ -46,20 +46,21 @@ def search_synonyms(nlp, word, df):
         - dataframe in which to search
         - The total number of synonym to retrieve
     """
-    appended_data = []
+    # appended_data = []
 
-    # This is to work with automatically created synonyms
-    # ms = nlp.vocab.vectors.most_similar(
-    #     np.asarray([nlp.vocab.vectors[nlp.vocab.strings[word]]]), n=n
-    # )
-    # synonyms = [nlp.vocab.strings[w] for w in ms[0][0]]
-    # print(f"Searching using the following synonyms of {word}:")
-    # print(synonyms)
+    # Create multiple whole word search and exclusion regex
+    w = r"\b(?:{})\b".format("|".join(map(re.escape, words)))
+    excl_w = r"\b(?:{})\b".format("|".join(map(re.escape, excl_words)))
 
+    # Drops na rows
     df.dropna(subset=["text"], inplace=True)
-    # Searches keyword/word
-    res = df[df["text"].str.contains(word, case=False, regex=False)].copy()
-    res["count"] = res["text"].str.count(word, re.I)
-    appended_data.append(res)
-    appended_df = pd.concat(appended_data)
-    return appended_df
+    # Searches keywords
+    res = df[df["text"].str.contains(w, case=False, na=False)].copy()
+    # Excludes keywords
+    res = res[~res["text"].str.contains(excl_w, case=False, na=False)].copy()
+    res["count"] = res["text"].str.count(w, re.I)
+
+    # appended_data.append(res)
+    # appended_df = pd.concat(appended_data)
+
+    return res
