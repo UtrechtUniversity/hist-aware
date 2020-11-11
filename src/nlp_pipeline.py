@@ -30,21 +30,25 @@ DATAFILE = dict(
 )
 # Keywords to use for the naive text selection
 KEYWORDS = [
-    "aardolie",
-    "petrolie",
-    "petroleum",
-    "olie",
-    "aardgas",
-    "gas",
+    # "aardolie",
+    # "petrolie",
+    # "petroleum",
+    # "olie",
+    # "aardgas",
+    # "gas",
     "steenkool",
     "bruinkool",
     "cokes",
-    # kool # Need to ask researchers concerning the meaning
+    "kool",
 ]
-DECADE = "1990s"
-# Transformer model to use for the creation of the synonyms
-NLP = nl_core_news_lg.load()
+EXCL_WORDS = [
+    "wortel",
+    "groenten",
+    "vrucht",
+]
+TOPIC = "coal"
 
+DECADE = "1990s"
 
 if __name__ == "__main__":
     TextSelection = TextSelection(
@@ -54,8 +58,9 @@ if __name__ == "__main__":
         UNGIZP=UNGIZP,
         DATAFILE=DATAFILE,
         KEYWORDS=KEYWORDS,
+        EXCL_WORDS=EXCL_WORDS,
+        TOPIC=TOPIC,
         DECADE=DECADE,
-        NLP=NLP,
     )
     # TODO: stream the search for synonyms? it has good and bad sides.
     # TODO: transform all these functions to manage `chunks` of data!
