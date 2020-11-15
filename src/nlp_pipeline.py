@@ -30,23 +30,23 @@ DATAFILE = dict(
 )
 # Keywords to use for the naive text selection
 KEYWORDS = [
-    # "aardolie",
-    # "petrolie",
-    # "petroleum",
-    # "olie",
+    "aardolie",
+    "petrolie",
+    "petroleum",
+    "olie",
     # "aardgas",
     # "gas",
-    "steenkool",
-    "bruinkool",
-    "cokes",
-    "kool",
+    # "steenkool",
+    # "bruinkool",
+    # "cokes",
+    # "kool",
 ]
 EXCL_WORDS = [
     "wortel",
     "groenten",
     "vrucht",
 ]
-TOPIC = "coal"
+TOPIC = "oil"
 
 DECADE = "1990s"
 
@@ -62,8 +62,7 @@ if __name__ == "__main__":
         TOPIC=TOPIC,
         DECADE=DECADE,
     )
-    # TODO: stream the search for synonyms? it has good and bad sides.
-    # TODO: transform all these functions to manage `chunks` of data!
+    # TODO: transform all these functions to manage `chunks` of data?
 
     # Ungzip metadata files
     if UNGIZP is True:
@@ -77,7 +76,6 @@ if __name__ == "__main__":
     logger.debug("Process files")
     TextSelection.process_files()
 
-    # Retrieval and searching should go togther as it cannot be kept in memory
     logger.debug("Retrieved saved files")
     TextSelection.retrieved_saved_files()
 
