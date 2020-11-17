@@ -10,7 +10,7 @@ import nl_core_news_lg
 # Import modules
 sys.path.insert(0, "..")
 
-from pipeline_text_selection import TextSelection
+from text_search import TextSearch
 
 # General directory path
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
@@ -28,30 +28,14 @@ DATAFILE = dict(
         "files": "False",
     }
 )
-# Keywords to use for the naive text selection
-KEYWORDS = [
-    "aardolie",
-    "petrolie",
-    "petroleum",
-    "olie",
-    # "aardgas",
-    # "gas",
-    # "steenkool",
-    # "bruinkool",
-    # "cokes",
-    # "kool",
-]
-EXCL_WORDS = [
-    "wortel",
-    "groenten",
-    "vrucht",
-]
-TOPIC = "oil"
-
+# Arguments to use for text search
+KEYWORDS = []
+EXCL_WORDS = [""]
+TOPIC = ""
 DECADE = "1990s"
 
 if __name__ == "__main__":
-    TextSelection = TextSelection(
+    ts = TextSearch(
         FILE_PATH=FILE_PATH,
         DIR_PATH=DIR_PATH,
         SAVE_PATH=SAVE_PATH,
@@ -67,17 +51,17 @@ if __name__ == "__main__":
     # Ungzip metadata files
     if UNGIZP is True:
         logger.debug("Ungzip metadata")
-        TextSelection.ungzip_metadata_files()
+        ts.ungzip_metadata_files()
 
     # If folder file_info is empty, create list of files
     logger.debug("Iterate directories")
-    TextSelection.iterate_directories()
+    ts.iterate_directories()
 
     logger.debug("Process files")
-    TextSelection.process_files()
+    ts.process_files()
 
     logger.debug("Retrieved saved files")
-    TextSelection.retrieved_saved_files()
+    ts.retrieved_saved_files()
 
     logger.debug("Search synonyms")
-    TextSelection.search_synonyms()
+    ts.search_synonyms()

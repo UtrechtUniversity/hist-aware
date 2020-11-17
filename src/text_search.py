@@ -23,13 +23,13 @@ from iterators import (
     ungzip_metdata,
     iterate_directory_gz,
 )
-from text_selection import select_articles
+from article_selection import select_articles
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
 
 
-class TextSelection:
+class TextSearch:
     def __init__(
         self,
         FILE_PATH: Path,
