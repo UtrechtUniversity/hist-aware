@@ -11,6 +11,7 @@ import nl_core_news_lg
 sys.path.insert(0, "..")
 
 from text_search import TextSearch
+import keywords as kw
 
 # General directory path
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
@@ -29,9 +30,11 @@ DATAFILE = dict(
     }
 )
 # Arguments to use for text search
-KEYWORDS = []
-EXCL_WORDS = [""]
-TOPIC = ""
+SEARCH_WORDS = False
+KEYWORDS = kw.KEYWORDS_OLIE
+EXCL_WORDS = kw.EXCL_WORDS_OLIE
+
+TOPIC = "kool"
 DECADE = "1990s"
 
 if __name__ == "__main__":
@@ -46,7 +49,6 @@ if __name__ == "__main__":
         TOPIC=TOPIC,
         DECADE=DECADE,
     )
-    # TODO: transform all these functions to manage `chunks` of data?
 
     # Ungzip metadata files
     if UNGIZP is True:
@@ -60,8 +62,12 @@ if __name__ == "__main__":
     logger.debug("Process files")
     ts.process_files()
 
-    logger.debug("Retrieved saved files")
-    ts.retrieved_saved_files()
+    if SEARCH_WORDS is True:
+        logger.debug("Retrieved saved files")
+        ts.retrieved_saved_files()
 
-    logger.debug("Search synonyms")
-    ts.search_synonyms()
+        logger.debug("Search synonyms")
+        ts.search_synonyms()
+
+    logger.debug("Preprocess selected articles for labeling")
+    ts.process_selected_articles()

@@ -24,6 +24,7 @@ from iterators import (
     iterate_directory_gz,
 )
 from article_selection import select_articles
+from preprocess import TextCleaner
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
@@ -248,3 +249,31 @@ class TextSearch:
                 selected_art = []
                 df_articles = pd.DataFrame
                 li = []
+
+    def process_selected_articles(self):
+        csv_temp = []
+
+        # Create preprocessing class
+        self.tc = TextCleaner()
+
+        # Load selected articles for selected topic in nlp_pipeline
+        csv = iterate_directory(self.SELECTED_DECADE, ".csv")
+        [csv_temp.append(c) for c in csv if self.TOPIC in c["article_name"]]
+
+        df = pd.concat(
+            [pd.read_csv(c["article_path"]) for c in csv_temp], ignore_index=True
+        )
+        # Initial clean
+        df.drop_duplicates(subset=["text"], inplace=True)
+        df.sort_values(by=["count"], ascending=False, inplace=True)
+        df.reset_index(inplace=True)
+        df.drop(columns={"index", "Unnamed: 0_x", "Unnamed: 0_y"}, inplace=True)
+
+        # Preprocess text to text_clean
+        df["text_clean"] = tqdm(df["text"].apply(self.tc.preprocess), total=df.shape[0])
+        # Add label column for labeling
+        df.insert(1, "label", "")
+        df_name = "to_label_" + str(self.TOPIC) + ".csv"
+
+        # Save
+        df.to_csv(os.path.join(self.SELECTED_DECADE, df_name))

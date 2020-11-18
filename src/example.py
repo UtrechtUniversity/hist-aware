@@ -1,30 +1,46 @@
 # example.py
 import sys
 import time
+import os
 
 from src import preprocess
 from src import tfidf
+from src import iterators
 
 import pandas as pd
 from pandarallel import pandarallel
 
+TOPIC = "kool"
+DECADE = "1990s"
+
 sys.path.insert(0, "..")
 
-ct = preprocess.TextCleaner()
+tc = preprocess.TextCleaner()
 
 # Load
-df = pd.read_csv("./notebooks/test_df.csv")
+csv = iterators.iterate_directory(
+    os.path.join("../data/processed/selected_articles/", DECADE), ".csv"
+)
+df = pd.concat(
+    [pd.read_csv(c["article_path"]) for c in csv],
+    ignore_index=True,
+)
+df.drop_duplicates(subset=["text"], inplace=True)
+df.sort_values(by=["count"], ascending=False, inplace=True)
+df.reset_index(inplace=True)
+df.drop(columns={"index", "Unnamed: 0_x", "Unnamed: 0_y"}, inplace=True)
 
 # Preprocess step
 
 # This step can be done with pandarallel or dask
 start_time = time.time()
 pandarallel.initialize(progress_bar=True)
-# df["text_wop"] = df["text"].parallel_apply(ct.preprocess)
-df["text_clean"] = df["text"].apply(ct.preprocess)
+# df["text_wop"] = df["text"].parallel_apply(tc.preprocess)
+df["text_clean"] = df["text"].apply_progress(tc.preprocess)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 # Save step
+SAVE_PATH
 df.to_csv("./notebooks/to_label_final_2.csv", sep=",")
 
 #  TFIDF

@@ -25,7 +25,6 @@ EXCL_WORDS_KOOL = [
     "recept",
     "savoye",
 ]
-
 KEYWORDS_GAS = [
     "gas",
     "Aardgas",
@@ -42,7 +41,7 @@ KEYWORDS_GAS = [
     "gasprijs",
 ]
 
-EXCL_WORDS_GAS = []
+EXCL_WORDS_GAS = ["vitaminen"]
 
 KEYWORDS_OLIE = [
     "olie",
