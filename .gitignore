@@ -7,6 +7,7 @@ data/processed/processed_metadata/**/*
 data/processed/file_info/**/*
 data/processed/selected_articles/**/*
 notebooks/**/*.csv
+dask-worker-space/**/*
 
 .vscode/
 *.bin
