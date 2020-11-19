@@ -35,7 +35,7 @@ KEYWORDS = kw.KEYWORDS_OLIE
 EXCL_WORDS = kw.EXCL_WORDS_OLIE
 
 TOPIC = "kool"
-DECADE = "1990s"
+DECADE = "1980s"
 
 if __name__ == "__main__":
     ts = TextSearch(

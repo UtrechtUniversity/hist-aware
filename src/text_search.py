@@ -14,10 +14,6 @@ import pandas as pd
 import numpy as np
 from pyfiglet import Figlet
 from tqdm import tqdm
-import dask.dataframe as dd
-from dask.distributed import Client
-from dask.diagnostics import ProgressBar
-from multiprocessing.pool import ThreadPool
 
 
 # Import modules
@@ -257,9 +253,7 @@ class TextSearch:
 
     def process_selected_articles(self):
         tqdm.pandas()
-        client = Client()
         csv_temp = []
-
         # Create preprocessing class
         self.tc = TextCleaner()
 
@@ -277,19 +271,12 @@ class TextSearch:
         df.drop(columns={"index", "Unnamed: 0_x", "Unnamed: 0_y"}, inplace=True)
 
         # Preprocess text to text_clean
-        data = df
-        ddata = dd.from_pandas(data, npartitions=15)
-        ProgressBar().register()
-
-        def apply_preprocess_to_DF(df):
-            return df["text"].apply(self.tc.preprocess)
-
-        res = ddata.map_partitions(apply_preprocess_to_DF).compute(scheduler=client)
-        # df["text_clean"] = df["text"].progress_apply(self.tc.preprocess)
+        res = df["text"].progress_apply(self.tc.preprocess)
+        # res = self.parallelize_dataframe(df=df["text"], func=self.tc.preprocess, n_cores=6)
+        df["text_clean"] = res
 
         # Add label column for labeling
         df.insert(1, "label", "")
-        df["text_clean"] = res
         df_name = "to_label_" + str(self.TOPIC) + ".csv"
 
         # Save

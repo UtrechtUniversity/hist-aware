@@ -1,11 +1,8 @@
 from collections import Counter
-from os import sep
 from string import punctuation
 import re
-import pandas as pd
 
 import enchant
-from pandarallel import pandarallel
 import nltk
 
 
