@@ -564,6 +564,35 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
+name = "imbalanced-learn"
+version = "0.7.0"
+description = "Toolbox for imbalanced dataset in machine learning."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+joblib = ">=0.11"
+numpy = ">=1.13.3"
+scikit-learn = ">=0.23"
+scipy = ">=0.19.1"
+
+[package.extras]
+docs = ["sphinx", "sphinx-gallery", "sphinx-rtd-theme", "sphinxcontrib-bibtex", "numpydoc", "matplotlib", "pandas"]
+tests = ["pytest", "pytest-cov"]
+
+[[package]]
+name = "imblearn"
+version = "0.0"
+description = "Toolbox for imbalanced dataset in machine learning."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+imbalanced-learn = "*"
+
+[[package]]
 name = "inexactsearch"
 version = "1.0.2"
 description = "Fuzzy String search algorithm using Soundex for Indian language"
@@ -2473,7 +2502,7 @@ heapdict = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "69998e88a34bad979a97225219e1b14a1027a92e2a8d482b60ed2c7fadb63511"
+content-hash = "9afce13a56defd8bd16ab0d272281ac76106d7a6319d0cb8a9392ef559a51e26"
 
 [metadata.files]
 absl-py = [
@@ -2863,6 +2892,14 @@ hnswlib = [
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
+]
+imbalanced-learn = [
+    {file = "imbalanced-learn-0.7.0.tar.gz", hash = "sha256:da59de0d1c0fa66f62054dd9a0a295a182563aa1abbb3bf9224a3678fcfe8fa4"},
+    {file = "imbalanced_learn-0.7.0-py3-none-any.whl", hash = "sha256:487b3fbbf93db046db93e3164c9a038b98abcbf588f1baad8816b2815a1ee5e9"},
+]
+imblearn = [
+    {file = "imblearn-0.0-py2.py3-none-any.whl", hash = "sha256:d42c2d709d22c00d2b9a91e638d57240a8b79b4014122d92181fcd2549a2f79a"},
+    {file = "imblearn-0.0.tar.gz", hash = "sha256:d8fbb662919c1b16f438ad91a8256220e53bcf6815c9ad5502c518b798de34f2"},
 ]
 inexactsearch = [
     {file = "inexactsearch-1.0.2.tar.gz", hash = "sha256:b7df09c46e1ea73996449ceb4df265483e4dc6b61dac2ea4df6f2e5ad8d53b75"},

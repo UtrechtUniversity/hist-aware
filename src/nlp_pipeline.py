@@ -31,10 +31,10 @@ DATAFILE = dict(
 )
 # Arguments to use for text search
 SEARCH_WORDS = False
-KEYWORDS = kw.KEYWORDS_OLIE
-EXCL_WORDS = kw.EXCL_WORDS_OLIE
+KEYWORDS = []
+EXCL_WORDS = []
 
-TOPIC = "kool"
+TOPIC = "olie"
 DECADE = "1980s"
 
 if __name__ == "__main__":
