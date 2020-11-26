@@ -15,6 +15,7 @@ KEYWORDS_KOOL = [
     "kolenindustrie",
     "cokes",
 ]
+
 EXCL_WORDS_KOOL = [
     "rode",
     "roode",
@@ -24,6 +25,12 @@ EXCL_WORDS_KOOL = [
     "vitaminen",
     "recept",
     "savoye",
+    "km",
+    "tel",
+    "tel.",
+    "telef.",
+    "telefoonnummer",
+    "MTV",
 ]
 KEYWORDS_GAS = [
     "gas",
@@ -39,9 +46,19 @@ KEYWORDS_GAS = [
     "gasexplosie",
     "gasindustrie",
     "gasprijs",
+    "renault",
 ]
 
-EXCL_WORDS_GAS = ["vitaminen"]
+EXCL_WORDS_GAS = [
+    "vitaminen",
+    "km",
+    "toyota",
+    "MTV",
+    "tel",
+    "tel.",
+    "telef.",
+    "telefoonnummer",
+]
 
 KEYWORDS_OLIE = [
     "olie",
@@ -63,4 +80,19 @@ KEYWORDS_OLIE = [
     "olieindustrie",
 ]
 
-EXCL_WORDS_OLIE = ["olijf", "zonnebloem", "bakolie", "frituren", "frituur", "bakken"]
+EXCL_WORDS_OLIE = [
+    "olijf",
+    "zonnebloem",
+    "bakolie",
+    "frituren",
+    "frituur",
+    "bakken",
+    "km",
+    "renault",
+    "toyota",
+    "MTV",
+    "tel",
+    "tel.",
+    "telef.",
+    "telefoonnummer",
+]
