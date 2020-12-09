@@ -30,12 +30,12 @@ DATAFILE = dict(
     }
 )
 # Arguments to use for text search
-SEARCH_WORDS = False
-KEYWORDS = []
-EXCL_WORDS = []
+SEARCH_WORDS = True
+KEYWORDS = kw.KEYWORDS_GAS
+EXCL_WORDS = kw.EXCL_WORDS_GAS
 
-TOPIC = "olie"
-DECADE = "1980s"
+TOPIC = "gas"
+DECADE = "1970s"
 
 if __name__ == "__main__":
     ts = TextSearch(

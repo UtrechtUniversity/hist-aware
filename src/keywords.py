@@ -46,7 +46,6 @@ KEYWORDS_GAS = [
     "gasexplosie",
     "gasindustrie",
     "gasprijs",
-    "renault",
 ]
 
 EXCL_WORDS_GAS = [
@@ -58,6 +57,7 @@ EXCL_WORDS_GAS = [
     "tel.",
     "telef.",
     "telefoonnummer",
+    "renault",
 ]
 
 KEYWORDS_OLIE = [
