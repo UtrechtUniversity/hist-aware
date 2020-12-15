@@ -1,5 +1,4 @@
-from collections import Counter
-from string import punctuation
+# preprocess.py
 import re
 
 import enchant
@@ -17,27 +16,27 @@ class TextCleaner:
         return self
 
     def lower(self):
-        """Lower case the text"""
+        """Transform to lower case."""
         self.text = "".join([t.lower() for t in self.text])
         return self
 
     def remove_stopwords(self):
-        """custom function to remove the stopwords"""
+        """Remove the stopwords."""
         self.text = "".join([t for t in self.text if t not in self.STOPWORDS])
         return self
 
     def remove_numeric(self):
-        """Remove numbers"""
+        """Remove numbers."""
         self.text = "".join([c for c in self.text if not c.isdigit()])
         return self
 
     def remove_non_ascii(self):
-        """Remove non ASCII chars"""
+        """Remove non ASCII chars."""
         self.text = "".join([re.sub(r"[^\x00-\x7f]", r" ", c) for c in self.text])
         return self
 
     def remove_extra_whitespace_tabs(self):
-        """Remove extra whitespaces and tabs"""
+        """Remove extra whitespaces and tabs."""
         self.text = re.sub(r"^\s*|\s\s*", " ", self.text).strip()
         return self
 
@@ -46,7 +45,7 @@ class TextCleaner:
         return self
 
     def remove_non_words(self):
-        """custom function to remove the rare words"""
+        """Remove rare words."""
         self.text = " ".join(
             [word for word in str(self.text).split() if self.d.check(word)]
         )

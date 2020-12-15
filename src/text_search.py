@@ -1,8 +1,7 @@
 # pipeline_text_selection.py
-"""
-This script contains the pipeline to select the first naive text
-selection on the delpher dataset
-"""
+
+"""Pipeline to make naive text selection on the delpher dataset."""
+
 import os
 from sys import getsizeof
 import csv
@@ -17,7 +16,7 @@ from tqdm import tqdm
 
 
 # Import modules
-from iterators import (
+from utils.iterators import (
     iterate_directory,
     iterate_metadata,
     iterate_files,
@@ -84,7 +83,7 @@ class TextSearch:
             )
 
     def ungzip_metadata_files(self) -> None:
-        """If true ungizp the metadata files in data/raw"""
+        """Ungizp the metadata files in data/raw."""
 
         # TODO: make the ungizip iterate over the entire data
         logger.debug("Ungzipping metadata")
@@ -92,7 +91,7 @@ class TextSearch:
 
     # TODO: Create two functions out of this
     def iterate_directories(self) -> None:
-        """Iterate directories to catalogue files"""
+        """Iterate directories to catalogue files."""
         if not os.path.isfile(os.path.join(self.INFO_DECADE, "article_info.csv")):
             # Iterate in the directory and retrieve all the xml article names
             logger.debug("Retrieving article information")

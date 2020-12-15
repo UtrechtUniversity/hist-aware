@@ -1,17 +1,16 @@
 # nlp_pipeline.py
-from itertools import filterfalse
 import os
 import sys
 from os.path import dirname
 
+from text_search import TextSearch
+import utils.keywords as kw
+
 from loguru import logger
-import nl_core_news_lg
 
 # Import modules
 sys.path.insert(0, "..")
 
-from text_search import TextSearch
-import keywords as kw
 
 # General directory path
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))

@@ -1,53 +1,26 @@
-import re
-import sys
 import os
 
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
-from sklearn.svm import SVC
 from sklearn import preprocessing, decomposition, model_selection, metrics, pipeline
 from sklearn.model_selection import GridSearchCV
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.decomposition import TruncatedSVD
-from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn import model_selection, preprocessing, metrics, linear_model, svm
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn import model_selection, preprocessing, metrics
 
-from imblearn.under_sampling import (
-    RandomUnderSampler,
-    NearMiss,
-    InstanceHardnessThreshold,
-    CondensedNearestNeighbour,
-    EditedNearestNeighbours,
-    RepeatedEditedNearestNeighbours,
-    AllKNN,
-    NeighbourhoodCleaningRule,
-    OneSidedSelection,
-    TomekLinks,
-)
 from imblearn.over_sampling import (
-    BorderlineSMOTE,
     SMOTE,
-    ADASYN,
-    SMOTENC,
     RandomOverSampler,
 )
-from imblearn.combine import SMOTEENN, SMOTETomek
-from imblearn.under_sampling import RandomUnderSampler
 from imblearn.pipeline import make_pipeline as make_pipeline_imb
 from imblearn.metrics import classification_report_imbalanced
-
-import nltk
-from nltk import word_tokenize
-from nltk.corpus import stopwords
 import qgrid
 
 
-class Classification:
+class ClassifyArticles:
     def __init__(
         self,
         SAVE_PATH,
@@ -64,42 +37,40 @@ class Classification:
     def load(self):
         # Read file
         train = pd.read_csv(
-            os.path.join(self.SELECTED_DECADE,f"{self.DECADE}_{sel.fTYPE}_labeled.csv")
+            os.path.join(
+                self.SELECTED_DECADE, f"{self.DECADE}_{self.TOPIC}_labeled.csv"
+            )
+        )
         # Drop na rows
         train.dropna(0, subset=["text_clean", "sentiment"], inplace=True)
         # Eliminate titles
-        train = train[train["type"] != "title"].copy()
+        self.train = train[train["type"] != "title"].copy()
 
     def split(self):
         # Spliting into X & y
-        #X = train.iloc[:, 2].values # to get th
-        X = train["text_clean"].values # to get th
+        # X = train.iloc[:, 2].values # to get th
+        X = self.train["text_clean"].values  #  to get th
 
         # Convert label to numeric
         cleanup_label = {"sentiment": {"Yes": 1, "No": 0}}
-        train.replace(cleanup_label, inplace=True)
-        y = train.sentiment.values
+        self.train.replace(cleanup_label, inplace=True)
+        y = self.train.sentiment.values
 
         # Split train and validation
-        from sklearn.model_selection import train_test_split
-        train_x, valid_x, train_y, valid_y = train_test_split(X, y, 
-                                                        stratify=y, 
-                                                        random_state=42, 
-                                                        test_size=0.1, shuffle=True)
+        self.train_x, self.valid_x, self.train_y, self.valid_y = train_test_split(
+            X, y, stratify=y, random_state=42, test_size=0.2, shuffle=True
+        )
 
-        # label encode the target variable 
+        # label encode the target variable
         encoder = preprocessing.LabelEncoder()
-        train_y = encoder.fit_transform(train_y)
-        valid_y = encoder.fit_transform(valid_y)
+        self.train_y = encoder.fit_transform(self.train_y)
+        self.valid_y = encoder.fit_transform(self.valid_y)
 
     def make_pipeline(self, model, sampler, classifier):
-        pipe = make_pipeline_imb(
-            model,
-            sampler,
-            classifier)
-        pipe.fit(train_x, train_y)
-        return(pipe)
-
+        pipe = make_pipeline_imb(model, sampler, classifier)
+        pipe.fit(self.train_x, self.train_y)
+        y_pred = pipe.predict(self.valid_x)
+        return (pipe, classification_report_imbalanced(self.valid_y, y_pred))
 
 
 def vectorize(vec, X_train, X_test):
@@ -145,28 +116,30 @@ def grid_search(pipe, params, X_train, X_test, y_train, y_test):
 
 
 if __name__ == "__main__":
-param_grid = {
-    'tfidfvectorizer__analyzer': ['word'],
-    'tfidfvectorizer__token_pattern': [r'\w{1,}'],
-    'tfidfvectorizer__ngram_range': [(1, 1), (1, 2), (1, 3)],  
-    'tfidfvectorizer__smooth_idf': [True, False],
-    'tfidfvectorizer__sublinear_tf': [1],
-    'tfidfvectorizer__strip_accents': ['unicode'],
-    'tfidfvectorizer__use_idf': [True, False],
-    'tfidfvectorizer__min_df': [1, 2, 3],
-    'tfidfvectorizer__max_features': [None, 5000, 10000, 50000],
-}
+    param_grid = {
+        "tfidfvectorizer__analyzer": ["word"],
+        "tfidfvectorizer__token_pattern": [r"\w{1,}"],
+        "tfidfvectorizer__ngram_range": [(1, 1), (1, 2), (1, 3)],
+        "tfidfvectorizer__smooth_idf": [True, False],
+        "tfidfvectorizer__sublinear_tf": [1],
+        "tfidfvectorizer__strip_accents": ["unicode"],
+        "tfidfvectorizer__use_idf": [True, False],
+        "tfidfvectorizer__min_df": [1, 2, 3],
+        "tfidfvectorizer__max_features": [None, 5000, 10000, 50000],
+    }
 
-pipe = make_pipeline(TfidfVectorizer(), SMOTE(), MultinomialNB())
+    CA = ClassifyArticles(
+        SAVE_PATH=,
+        DECADE=,
+        TOPIC=
+    )
+    # Make pipeline
+    pipe, class_report = CA.make_pipeline(TfidfVectorizer(), SMOTE(), MultinomialNB())
 
-grid_search(pipe)
+    # Search grid
+    grid_search = GridSearchCV(pipe, param_grid, cv=10)
+    grid_search.fit(train_x, train_y)
 
-grid_search = GridSearchCV(pipe, param_grid, cv=10)
-
-#print("Performing grid search...")
-#print("pipeline:", [name for name, _ in pipeline.steps])
-#print("parameters:")
-#pprint(parameters)
-#t0 = time()
-
-grid_search.fit(train_x, train_y)
+    for k, v in grid_search.best_params_.items():
+        print(k, ' : ', v)
+    print(grid_search.best_score_)
