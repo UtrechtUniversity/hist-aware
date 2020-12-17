@@ -1,3 +1,4 @@
+# iterators.py
 import os
 import gzip
 import shutil
@@ -7,7 +8,7 @@ from loguru import logger
 from itertools import chain
 from tqdm import tqdm
 
-from src import parsers
+from src.utils import parsers
 
 
 def ungzip_metdata(dir_path, file_type):

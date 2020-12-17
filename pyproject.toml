@@ -53,6 +53,7 @@ cloudpickle = "^1.6.0"
 bokeh = "^2.2.3"
 fsspec = "^0.8.4"
 imblearn = "^0.0"
+openpyxl = "^3.0.5"
 
 [tool.poetry.dev-dependencies]
 jupyterlab = "^2.2.6"

@@ -1,8 +1,8 @@
+# parsers.py
 import re
 import pathlib
 from datetime import datetime
 import xml.etree.ElementTree as et
-import xmltodict
 
 
 def parse_XML_article(path, art_dir, title, index):
