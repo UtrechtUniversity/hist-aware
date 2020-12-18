@@ -16,6 +16,8 @@ from loguru import logger
 
 
 class ClassifyArticles:
+    """Class used to classify articles."""
+
     def __init__(
         self,
         SAVE_PATH,
@@ -37,16 +39,27 @@ class ClassifyArticles:
             "tfidfvectorizer__strip_accents": ["unicode"],
             "tfidfvectorizer__use_idf": [True, False],
             "tfidfvectorizer__min_df": [1, 2, 3],
-            "tfidfvectorizer__max_features": [None, 5000, 10000, 50000],
+            "tfidfvectorizer__max_features": [None, 5000, 10000, 50000, 100000],
         }
 
     def load(self):
-        # Read file
-        train = pd.read_csv(
-            os.path.join(
-                self.SELECTED_DECADE, f"{self.DECADE}_{self.TOPIC}_labeled.csv"
+        """Read labeled articles."""
+
+        if "all_decades" in self.SELECTED_DECADE:
+            logger.info("Using multiple decades to train")
+            train_1990s = pd.read_csv(
+                f"{self.SELECTED_DECADE}/1990s_{self.TOPIC}_labeled.csv"
             )
-        )
+            train_1980s = pd.read_csv(
+                f"{self.SELECTED_DECADE}/1980s_{self.TOPIC}_labeled.csv"
+            )
+            train = train_1990s.append(train_1980s)
+        else:
+            train = pd.read_csv(
+                os.path.join(
+                    self.SELECTED_DECADE, f"{self.DECADE}_{self.TOPIC}_labeled.csv"
+                )
+            )
         # Drop na rows
         train.dropna(0, subset=["text_clean", "sentiment"], inplace=True)
         # Eliminate titles
@@ -54,9 +67,11 @@ class ClassifyArticles:
         return self.train
 
     def split(self, data):
+        """Split train and valid dataset and vectorize them."""
+
         # Spliting into X & y
-        # X = train.iloc[:, 2].values # to get th
-        X = data["text_clean"].values  #  to get th
+        # X = train.iloc[:, 2].values
+        X = data["text_clean"].values
 
         # Convert label to numeric
         cleanup_label = {"sentiment": {"Yes": 1, "No": 0}}
@@ -74,17 +89,25 @@ class ClassifyArticles:
         self.valid_y = encoder.fit_transform(self.valid_y)
 
     def make_pipeline(self, model, sampler, classifier):
+        """Create training pipeline."""
+
         self.pipe = make_pipeline_imb(model, sampler, classifier)
         self.pipe.fit(self.train_x, self.train_y)
         y_pred = self.pipe.predict(self.valid_x)
         print(classification_report_imbalanced(self.valid_y, y_pred))
         return self.pipe
 
-    # Load the previous dataset for testing
-    def predict(self, pipe, THRESHOLD):
-        test = pd.read_csv(
-            f"{self.SELECTED_DECADE}/{self.DECADE}_{self.TOPIC}_to_label.csv"
+    def predict(self, DECADE_TO_PREDICT, pipe, THRESHOLD):
+        """Load dataset for predicting.
+
+        One dataset at a time, that can be different that the one
+        used to create the model.
+        """
+
+        PREDICT_PATH = os.path.join(
+            self.SAVE_PATH, "labeled_articles", DECADE_TO_PREDICT
         )
+        test = pd.read_csv(PREDICT_PATH)
         test.rename(columns={"label": "sentiment"}, inplace=True)
         test["sentiment"] = None
 
@@ -113,7 +136,9 @@ class ClassifyArticles:
             f"Classification results saved as '{self.DECADE}_{self.TOPIC}_labeled_full_{THRESHOLD}.csv'"
         )
 
-    def run_classification_pipeline(self, sampler, classifier, THRESHOLD=0.1):
+    def run_classification_pipeline(self, sampler, classifier):
+        """Main classification pipeline to call previous functions."""
+
         logger.debug("Load and split data")
         # Load and split data
         train_data = self.load()
@@ -137,32 +162,3 @@ class ClassifyArticles:
         logger.info("Make pipeline with best results")
         best_res = grid_search.cv_results_["params"][grid_search.best_index_]
         return self.make_pipeline(TfidfVectorizer(input=best_res), sampler, classifier)
-
-
-# def grid_search(pipe, X_train, X_test, y_train, y_test):
-#     """Use multiple classifiers and grid search for prediction"""
-
-#     if not set(pipe.keys()).issubset(set(params.keys())):
-#         raise ValueError("Some estimators are missing parameters")
-
-#     for key in pipe.keys():
-
-#         pipe = pipe[key]
-#         param = params[key]
-#         gs = GridSearchCV(pipe, param, cv=10, error_score=0, refit=True)
-#         gs.fit(X_train, y_train)
-#         y_pred = gs.predict(X_test)
-
-#         # Print scores for the classifier
-#         print(key, ":", gs.best_params_)
-#         print(
-#             "Accuracy: %1.3f \tPrecision: %1.3f \tRecall: %1.3f \t\tF1: %1.3f\n"
-#             % (
-#                 accuracy_score(y_test, y_pred),
-#                 precision_score(y_test, y_pred, average="macro"),
-#                 recall_score(y_test, y_pred, average="macro"),
-#                 f1_score(y_test, y_pred, average="macro"),
-#             )
-#         )
-
-#     return

@@ -31,19 +31,19 @@ DATAFILE = dict(
     {
         "start": "False",
         "metadata": "False",
-        "files": "False",
+        "articles": "False",
     }
 )
 # Arguments to use for text search
 SEARCH_WORDS = False
-KEYWORDS = kw.KEYWORDS_OLIE
-EXCL_WORDS = kw.EXCL_WORDS_OLIE
+KEYWORDS = kw.KEYWORDS_GAS
+EXCL_WORDS = kw.EXCL_WORDS_GAS
 
 PREPROCESS = False
 CLASSIFY = True
 
-TOPIC = "olie"
-DECADE = "1980s"
+TOPIC = "gas"
+DECADE = "all_decades"
 
 if __name__ == "__main__":
     pipe = PipelineArticles(
@@ -63,12 +63,13 @@ if __name__ == "__main__":
         logger.info("Ungzip metadata")
         pipe.ungzip_metadata_files()
 
-    # If folder file_info is empty, create list of files
-    logger.info("Iterate directories")
-    pipe.iterate_directories()
+    if CLASSIFY is not True:
+        # If folder file_info is empty, create list of files
+        logger.info("Iterate directories")
+        pipe.iterate_directories()
 
-    logger.info("Process files")
-    pipe.process_files()
+        logger.info("Process files")
+        pipe.process_files()
 
     if SEARCH_WORDS is True:
         logger.info("Retrieved saved files")
@@ -88,7 +89,7 @@ if __name__ == "__main__":
             sampler=SMOTE(),
             classifier=MultinomialNB(),
         )
-        ca.predict(pipe, THRESHOLD=0.15)
-        ca.predict(pipe, THRESHOLD=0.10)
-        ca.predict(pipe, THRESHOLD=0.05)
-        ca.predict(pipe, THRESHOLD=0.02)
+        ca.predict(pipe, "1970s", THRESHOLD=0.15)
+        ca.predict(pipe, "1970s", THRESHOLD=0.10)
+        ca.predict(pipe, "1970s", THRESHOLD=0.05)
+        ca.predict(pipe, "1970s", THRESHOLD=0.02)

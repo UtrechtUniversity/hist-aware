@@ -134,7 +134,7 @@ class PipelineArticles:
             logger.debug("Metadata already processed. Skipping.")
 
     def process_articles(self, save_path, files) -> None:
-        if self.DATAFILE["files"] == "True":
+        if self.DATAFILE["articles"] == "True":
             logger.debug("Processing and saving articles to csv of articles")
             iterate_files(save_path, files)
         else:
