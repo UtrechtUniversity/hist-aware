@@ -43,7 +43,7 @@ PREPROCESS = False
 CLASSIFY = True
 
 TOPIC = "gas"
-DECADE = "all_decades"
+DECADE = "1990s"
 
 if __name__ == "__main__":
     pipe = PipelineArticles(
@@ -85,11 +85,11 @@ if __name__ == "__main__":
     if CLASSIFY is True:
         logger.info("Training classification model")
         ca = ClassifyArticles(SAVE_PATH=SAVE_PATH, DECADE=DECADE, TOPIC=TOPIC)
-        pipe = ca.run_classification_pipeline(
+        pipe, thres = ca.run_classification_pipeline(
             sampler=SMOTE(),
             classifier=MultinomialNB(),
         )
-        ca.predict(pipe, "1970s", THRESHOLD=0.15)
-        ca.predict(pipe, "1970s", THRESHOLD=0.10)
-        ca.predict(pipe, "1970s", THRESHOLD=0.05)
-        ca.predict(pipe, "1970s", THRESHOLD=0.02)
+        ca.predict(pipe, "1990s", THRESHOLD=0.90)
+        ca.predict(pipe, "1970s", THRESHOLD=0.95)
+        ca.predict(pipe, "1970s", THRESHOLD=0.98)
+        ca.predict(pipe, "1970s", THRESHOLD=0.99)

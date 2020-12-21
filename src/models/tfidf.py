@@ -2,12 +2,14 @@ import os
 
 import pandas as pd
 
-from sklearn import preprocessing, decomposition, model_selection, metrics, pipeline
-from sklearn.model_selection import GridSearchCV
+from numpy import argmax
+from numpy import arange
+from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn import model_selection, preprocessing, metrics
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import roc_curve, precision_recall_curve
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import f1_score
 
 from imblearn.pipeline import make_pipeline as make_pipeline_imb
 from imblearn.metrics import classification_report_imbalanced
@@ -79,33 +81,67 @@ class ClassifyArticles:
         y = data.sentiment.values
 
         # Split train and validation
-        self.train_x, self.valid_x, self.train_y, self.valid_y = train_test_split(
+        self.train_x, self.test_x, self.train_y, self.test_y = train_test_split(
             X, y, stratify=y, random_state=42, test_size=0.2, shuffle=True
         )
 
         # label encode the target variable
         encoder = preprocessing.LabelEncoder()
         self.train_y = encoder.fit_transform(self.train_y)
-        self.valid_y = encoder.fit_transform(self.valid_y)
+        self.test_y = encoder.fit_transform(self.test_y)
+
+    def to_labels(self, pos_probs, threshold):
+        """Apply threshold to positive probabilities to create labels."""
+        return (pos_probs >= threshold).astype("int")
 
     def make_pipeline(self, model, sampler, classifier):
         """Create training pipeline."""
 
+        # Create pipeline
         self.pipe = make_pipeline_imb(model, sampler, classifier)
         self.pipe.fit(self.train_x, self.train_y)
-        y_pred = self.pipe.predict(self.valid_x)
-        print(classification_report_imbalanced(self.valid_y, y_pred))
-        return self.pipe
+        # Predict for report
+        y_pred = self.pipe.predict(self.test_x)
 
-    def predict(self, DECADE_TO_PREDICT, pipe, THRESHOLD):
+        # Search "best" threshold
+        y_hat = self.pipe.predict_proba(self.test_x)
+        fpr, tpr, thresholds = roc_curve(self.test_y, y_hat[:, 1])
+        J = tpr - fpr
+        ix = argmax(J)
+        best_thresh = thresholds[ix]
+        print("Suggested best ROC Threshold=%f" % (best_thresh))
+
+        # calculate roc curves
+        precision, recall, thresholds = precision_recall_curve(self.test_y, y_hat[:, 1])
+        # convert to f score
+        fscore = (2 * precision * recall) / (precision + recall)
+        # locate the index of the largest f score
+        ix = argmax(fscore)
+        print(
+            "Suggested best Threshold=%f, F-Score=%.3f" % (thresholds[ix], fscore[ix])
+        )
+
+        # define thresholds
+        thresholds = arange(0, 1, 0.001)
+        # evaluate each threshold
+        scores = [
+            f1_score(self.test_y, self.to_labels(y_hat[:, 1], t)) for t in thresholds
+        ]
+        # get best threshold
+        ix = argmax(scores)
+        print("Threshold=%.3f, F-Score=%.5f" % (thresholds[ix], scores[ix]))
+
+        print(classification_report_imbalanced(self.test_y, y_pred))
+        return (self.pipe, thresholds[ix])
+
+    def predict(self, pipe, DECADE_TO_PREDICT, THRESHOLD):
         """Load dataset for predicting.
-
         One dataset at a time, that can be different that the one
         used to create the model.
         """
-
+        PREDICT_FILE = f"{DECADE_TO_PREDICT}_{self.TOPIC}_to_label.csv"
         PREDICT_PATH = os.path.join(
-            self.SAVE_PATH, "labeled_articles", DECADE_TO_PREDICT
+            self.SAVE_PATH, "labeled_articles", DECADE_TO_PREDICT, PREDICT_FILE
         )
         test = pd.read_csv(PREDICT_PATH)
         test.rename(columns={"label": "sentiment"}, inplace=True)
@@ -122,15 +158,20 @@ class ClassifyArticles:
         self.x_test = test_df["text_clean"].values
         self.y_test = pipe.predict_proba(self.x_test)
 
-        # Add predicted values to dataframe
-        test_df["sentiment"] = self.y_test
+        # Add predicted values (y --> 1) to dataframe
+        test_df["sentiment"] = self.y_test[:, 1]
 
-        # Select only values below threshold
-        self.df_labeled = test_df[test_df["sentiment"] < THRESHOLD]
+        # Select only values above threshold
+        self.df_labeled = test_df[test_df["sentiment"] >= THRESHOLD]
 
         # Save labeled df
         self.df_labeled.to_csv(
-            f"{self.SELECTED_DECADE}/{self.DECADE}_{self.TOPIC}_labeled_full_{THRESHOLD}.csv"
+            os.path.join(
+                self.SAVE_PATH,
+                "labeled_articles",
+                DECADE_TO_PREDICT,
+                f"{self.DECADE}_{self.TOPIC}_labeled_full_{THRESHOLD}.csv",
+            )
         )
         logger.info(
             f"Classification results saved as '{self.DECADE}_{self.TOPIC}_labeled_full_{THRESHOLD}.csv'"
@@ -146,7 +187,7 @@ class ClassifyArticles:
 
         # Make pipeline
         logger.debug("Create pipeline")
-        pipe = self.make_pipeline(TfidfVectorizer(), sampler, classifier)
+        pipe, thres = self.make_pipeline(TfidfVectorizer(), sampler, classifier)
 
         # Search grid
         logger.info("Searching grid")
@@ -161,4 +202,7 @@ class ClassifyArticles:
         # Predict using best estimators
         logger.info("Make pipeline with best results")
         best_res = grid_search.cv_results_["params"][grid_search.best_index_]
-        return self.make_pipeline(TfidfVectorizer(input=best_res), sampler, classifier)
+        best_pipe, best_thres = self.make_pipeline(
+            TfidfVectorizer(input=best_res), sampler, classifier
+        )
+        return (best_pipe, best_thres)
