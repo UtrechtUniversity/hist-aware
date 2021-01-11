@@ -1,0 +1,24 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.8.5",
+    "heartbeatAt": "2021-01-11T16:49:38.237387",
+    "startedAt": "2021-01-11T16:49:36.811093",
+    "docker": null,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [
+        "-f",
+        "/Users/leonardovida/Library/Jupyter/runtime/kernel-f4bcc459-53a9-4849-83fa-77eeb792ec46.json"
+    ],
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "https://github.com/UtrechtUniversity/HistAware.git",
+        "commit": "6335a046f5c8a93b085f437374eca955cf8ff01d"
+    },
+    "email": "lleonardovida@gmail.com",
+    "root": "/Users/leonardovida/dev/HistAware",
+    "host": "mbp.local",
+    "username": "leonardovida",
+    "executable": "/Users/leonardovida/Library/Caches/pypoetry/virtualenvs/histaware-RplM6c3o-py3.8/bin/python"
+}
