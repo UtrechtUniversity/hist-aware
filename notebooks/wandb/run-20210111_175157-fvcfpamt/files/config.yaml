@@ -18,6 +18,9 @@ dataset:
 max_epochs:
   desc: null
   value: 100
+max_len:
+  desc: null
+  value: 400
 num_workers:
   desc: null
   value: 6
