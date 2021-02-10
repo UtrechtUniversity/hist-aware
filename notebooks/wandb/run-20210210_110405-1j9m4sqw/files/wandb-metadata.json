@@ -1,0 +1,26 @@
+{
+    "os": "Linux-4.15.0-118-generic-x86_64-with-glibc2.27",
+    "python": "3.8.6",
+    "heartbeatAt": "2021-02-10T11:04:06.088451",
+    "startedAt": "2021-02-10T11:04:05.096634",
+    "docker": null,
+    "gpu": "GeForce RTX 2080 Ti",
+    "gpu_count": 1,
+    "cpu_count": 5,
+    "cuda": null,
+    "args": [
+        "-f",
+        "/home/leonardovida/.local/share/jupyter/runtime/kernel-32e1d755-c267-4f3b-aa77-f991d8e4c7a8.json"
+    ],
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "https://github.com/UtrechtUniversity/hist-aware.git",
+        "commit": "e9075880e919577d6d65b2d81c181222af13badc"
+    },
+    "email": null,
+    "root": "/home/leonardovida/hist-aware",
+    "host": "rsc-instance",
+    "username": "leonardovida",
+    "executable": "/home/leonardovida/.cache/pypoetry/virtualenvs/histaware-JJpORNNs-py3.8/bin/python"
+}

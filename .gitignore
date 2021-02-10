@@ -7,7 +7,6 @@ data/processed/processed_metadata/**/*
 data/processed/file_info/**/*
 data/processed/selected_articles/**/*
 data/processed/labeled_articles/**/*
-notebooks/**/*.csv
 dask-worker-space/**/*
 
 .vscode/
