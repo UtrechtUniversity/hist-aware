@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-
+from pandas.core.frame import DataFrame
 from numpy import argmax
 from numpy import arange
 from sklearn import preprocessing
@@ -23,12 +23,14 @@ class ClassifyArticles:
     def __init__(
         self,
         SAVE_PATH,
-        TOPIC: str,
-        DECADE: str,
+        TOPIC,
+        DECADE,
+        CUSTOM_LABELS,
     ) -> None:
         self.SAVE_PATH = SAVE_PATH
         self.DECADE = DECADE
         self.TOPIC = TOPIC
+        self.CUSTOM_LABELS = CUSTOM_LABELS
         self.SELECTED_DECADE = os.path.join(
             self.SAVE_PATH, "labeled_articles", self.DECADE
         )
@@ -47,15 +49,30 @@ class ClassifyArticles:
     def load(self):
         """Read labeled articles."""
 
-        if "all_decades" in self.SELECTED_DECADE:
-            logger.info("Using multiple decades to train")
-            train_1990s = pd.read_csv(
-                f"{self.SELECTED_DECADE}/1990s_{self.TOPIC}_labeled.csv"
-            )
-            train_1980s = pd.read_csv(
-                f"{self.SELECTED_DECADE}/1980s_{self.TOPIC}_labeled.csv"
-            )
-            train = train_1990s.append(train_1980s)
+        if self.CUSTOM_LABELS is True:
+            logger.info("Using all decades to train")
+            decades = ["1970s", "1980s", "1990s"]
+            first = True
+            for i in decades:
+                if i is not self.DECADE:
+                    if first is True:
+                        DECADE_PATH = os.path.join(
+                            self.SAVE_PATH, "labeled_articles", i
+                        )
+                        LABELS_PATH = os.path.join(
+                            DECADE_PATH, f"{i}_{self.TOPIC}_labeled.csv"
+                        )
+                        train = pd.read_csv(LABELS_PATH)
+                        first = False
+                    if first is False:
+                        DECADE_PATH = os.path.join(
+                            self.SAVE_PATH, "labeled_articles", i
+                        )
+                        LABELS_PATH = os.path.join(
+                            DECADE_PATH, f"{i}_{self.TOPIC}_labeled.csv"
+                        )
+                        train_temp = pd.read_csv(LABELS_PATH)
+                        train = pd.concat([train, train_temp], ignore_index=True)
         else:
             train = pd.read_csv(
                 os.path.join(

@@ -10,6 +10,7 @@ data/processed/labeled_articles/**/*
 dask-worker-space/**/*
 
 .vscode/
+*.DS_Store
 *.bin
 *.vec
 *.txt

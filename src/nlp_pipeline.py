@@ -42,6 +42,7 @@ class PipelineArticles:
         EXCL_WORDS: str,
         TOPIC: str,
         DECADE: str,
+        CUSTOM_LABELS: bool,
     ) -> None:
         self.FILE_PATH = FILE_PATH
         self.DECADE = DECADE
@@ -52,6 +53,7 @@ class PipelineArticles:
         self.KEYWORDS = KEYWORDS
         self.EXCL_WORDS = EXCL_WORDS
         self.TOPIC = TOPIC
+        self.CUSTOM_LABELS = CUSTOM_LABELS
 
         self.RAW_DECADE = os.path.join(self.DIR_PATH, self.DECADE)
         self.PROC_ART_DECADE = os.path.join(

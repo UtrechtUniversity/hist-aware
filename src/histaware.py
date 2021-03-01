@@ -1,49 +1,36 @@
-# nlp_pipeline.py
 import os
 import sys
 from os.path import dirname
 
-from nlp_pipeline import PipelineArticles
-from models.tfidf import ClassifyArticles
-import utils.keywords as kw
-
-from imblearn.over_sampling import (
-    SMOTE,
-)
+from imblearn.over_sampling import SMOTE
+from loguru import logger
 from sklearn.naive_bayes import MultinomialNB
 
-from loguru import logger
+from src.nlp_pipeline import PipelineArticles
+from src.models.tfidf import ClassifyArticles
+from src.core.config import settings
+import src.utils.keywords as kw
 
 # Import modules
 sys.path.insert(0, "..")
-
-
 # General directory path
 FILE_PATH = dirname(dirname(os.path.realpath(__file__)))
-# Data path for Delpher data
-DIR_PATH = os.path.join(FILE_PATH, "data", "raw", "delpher")
-# Save path
-SAVE_PATH = os.path.join(FILE_PATH, "data", "processed")
-# Decide whether to ungizip metadata
-UNGIZP = False
-# Decide whether to process and save articles and metadata data
-DATAFILE = dict(
-    {
-        "start": "False",
-        "metadata": "False",
-        "articles": "False",
-    }
+
+# Use core.config to set this
+DIR_PATH = os.path.join(
+    FILE_PATH, settings.DATA_DIR, settings.DATA_DIR_RAW, settings.DATA_DIR_DELPHER
 )
-# Arguments to use for text search
-SEARCH_WORDS = False
-KEYWORDS = kw.KEYWORDS_GAS
-EXCL_WORDS = kw.EXCL_WORDS_GAS
-
-PREPROCESS = False
-CLASSIFY = True
-
-TOPIC = "gas"
-DECADE = "1990s"
+SAVE_PATH = os.path.join(FILE_PATH, settings.DATA_DIR, settings.DATA_DIR_SAVE)
+UNGIZP = settings.UNGIZP
+DATAFILE = settings.DATAFILE
+SEARCH_WORDS = settings.SEARCH_WORDS
+KEYWORDS = settings.LIST_INCL_WORDS
+EXCL_WORDS = settings.LIST_EXCL_WORDS
+PREPROCESS = settings.PREPROCESS
+CLASSIFY = settings.CLASSIFY
+TOPIC = settings.TOPIC
+DECADE = settings.DECADE
+CUSTOM_LABELS = settings.CUSTOM_LABELS
 
 if __name__ == "__main__":
     pipe = PipelineArticles(
@@ -56,6 +43,7 @@ if __name__ == "__main__":
         EXCL_WORDS=EXCL_WORDS,
         TOPIC=TOPIC,
         DECADE=DECADE,
+        CUSTOM_LABELS=CUSTOM_LABELS,
     )
 
     # Ungzip metadata files
@@ -84,12 +72,14 @@ if __name__ == "__main__":
 
     if CLASSIFY is True:
         logger.info("Training classification model")
-        ca = ClassifyArticles(SAVE_PATH=SAVE_PATH, DECADE=DECADE, TOPIC=TOPIC)
+        ca = ClassifyArticles(
+            SAVE_PATH=SAVE_PATH, DECADE=DECADE, TOPIC=TOPIC, CUSTOM_LABELS=CUSTOM_LABELS
+        )
         pipe, thres = ca.run_classification_pipeline(
             sampler=SMOTE(),
             classifier=MultinomialNB(),
         )
-        ca.predict(pipe, "1990s", THRESHOLD=0.90)
+        ca.predict(pipe, "1970s", THRESHOLD=0.90)
         ca.predict(pipe, "1970s", THRESHOLD=0.95)
         ca.predict(pipe, "1970s", THRESHOLD=0.98)
         ca.predict(pipe, "1970s", THRESHOLD=0.99)
