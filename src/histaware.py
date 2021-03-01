@@ -79,7 +79,7 @@ if __name__ == "__main__":
             sampler=SMOTE(),
             classifier=MultinomialNB(),
         )
-        ca.predict(pipe, "1970s", THRESHOLD=0.90)
-        ca.predict(pipe, "1970s", THRESHOLD=0.95)
-        ca.predict(pipe, "1970s", THRESHOLD=0.98)
-        ca.predict(pipe, "1970s", THRESHOLD=0.99)
+        ca.predict(pipe, self.DECADE, THRESHOLD=0.90)
+        ca.predict(pipe, self.DECADE, THRESHOLD=0.95)
+        ca.predict(pipe, self.DECADE, THRESHOLD=0.98)
+        ca.predict(pipe, self.DECADE, THRESHOLD=0.99)
