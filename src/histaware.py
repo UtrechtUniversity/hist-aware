@@ -58,10 +58,14 @@ if __name__ == "__main__":
         logger.info("Process files")
         pipe.process_files()
 
-    if settings.SEARCH_WORDS is True:
+    if settings.MERGE is True:
         logger.info("Retrieved saved files")
         pipe.retrieved_saved_files()
 
+        logger.info("Merge articles and metadata")
+        pipe.merge_metadata_articles()
+
+    if settings.SEARCH_WORDS is True:
         logger.info("Search synonyms")
         pipe.search_synonyms()
 

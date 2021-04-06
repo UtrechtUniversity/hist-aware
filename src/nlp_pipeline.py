@@ -65,6 +65,9 @@ class PipelineArticles:
         self.SELECTED_DECADE = os.path.join(
             self.SAVE_PATH, "selected_articles", self.DECADE
         )
+        self.MERGED_DECADE = os.path.join(
+            self.SAVE_PATH, "merged_articles", self.DECADE
+        )
         self.INFO_DECADE = os.path.join(self.SAVE_PATH, "file_info", self.DECADE)
 
         f = Figlet(font="slant")
@@ -223,6 +226,28 @@ class PipelineArticles:
             inplace=True,
         )
 
+        li = []
+        logger.info("Searching keywords")
+        # Load processed articles iteratively
+        for i, row in tqdm(
+            self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
+        ):
+            csv_file = pd.read_csv(row["csv_path"])
+            li.append(csv_file)
+            if i % 30 == 0:
+                logger.debug(f"Currently parsed {i*50000} articles")
+                df_articles = pd.concat(li, axis=0)
+                df_articles.sort_values(by=["index"], ascending=True)
+                df_articles.rename(
+                    columns={"filepath": "article_filepath", "index": "index_article"},
+                    inplace=True,
+                )
+                df_joined = df_articles.merge(self.df_metadata, how="left", on="title")
+                NAME = self.TOPIC + "_" + str(i)
+                NAME_JOINED = os.path.join(self.MERGED_DECADE, NAME)
+                df_joined.to_csv(NAME_JOINED)
+                li = []
+
         return None
 
     def search_synonyms(self) -> None:
@@ -242,24 +267,6 @@ class PipelineArticles:
             inplace=True,
         )
         self.df_metadata.sort_values(by=["index"], ascending=True)
-
-        li = []
-        logger.info("Searching keywords")
-        # Load processed articles iteratively
-        for i, row in tqdm(
-            self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
-        ):
-            csv_file = pd.read_csv(row["csv_path"])
-            li.append(csv_file)
-            if i % 20 == 0:
-                logger.debug(f"Currently parsed {i*50000} articles")
-                df_articles = pd.concat(li, axis=0)
-                df_articles.sort_values(by=["index"], ascending=True)
-                df_articles.rename(
-                    columns={"filepath": "article_filepath", "index": "index_article"},
-                    inplace=True,
-                )
-                df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
 
         # Search synonyms in saved articles
         li = []

@@ -16,36 +16,28 @@ def parse_XML_article(path, art_dir, title, index):
 
     xtree = et.parse(path)
     xroot = xtree.getroot()
-    list_articles = []
 
     # Parse the date with regex
     match = re.search(r"\d{4}[/]\d{2}[-]\d{2}", path)
     date = datetime.strptime(match.group(), "%Y/%m-%d").date()
 
+    list_p = []
+    article = {}
     for i, node in enumerate(xroot):
+        article["article_name"] = str(title)
+        article["date"] = str(date)
+        article["index"] = index
+        article["filepath"] = path
+        article["dir"] = art_dir
         if node.tag == "title":
-            article = {}
-            article["type"] = "title"
-            article["text"] = node.text
-            article["article_name"] = str(title)
-            article["date"] = str(date)
-            article["index"] = index
-            article["filepath"] = path
-            article["dir"] = art_dir
-            list_articles.append(article)
+            article["title"] = node.text
         else:
-            article = {}
-            article["type"] = "p"
-            article["text"] = node.text
-            article["article_name"] = str(title)
-            article["date"] = str(date)
-            article["index"] = index
-            article["filepath"] = path
-            article["dir"] = art_dir
-            list_articles.append(article)
+            list_p.append(node.text)
+    article["p"] = list_p
+    list_p = []
 
     # Returns list of dict of articles and titles
-    return list_articles
+    return article
 
 
 def parse_XML_metadata(path, met_dir, title, index):

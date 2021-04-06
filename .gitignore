@@ -1,3 +1,6 @@
+# Config
+src/core/config.py
+
 # Data
 data/raw/**/*
 data/models/**/*

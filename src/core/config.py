@@ -20,9 +20,11 @@ class Settings(BaseSettings):
     # Decide whether to process and save articles and metadata data
     DATAFILE: Dict = {
         "start": "True",
-        "metadata": "True",
-        "articles": "False",
+        "metadata": "False",
+        "articles": "True",
     }
+    # Merge articles and metadata
+    MERGE: bool = False
     # Run search words and add metadata to articles csv
     SEARCH_WORDS: bool = False
     LIST_INCL_WORDS: Any = kw.KEYWORDS_GAS
