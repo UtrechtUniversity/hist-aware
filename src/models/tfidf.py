@@ -26,6 +26,7 @@ class ClassifyArticles:
         TOPIC,
         DECADE,
         CUSTOM_LABELS,
+        CUSTOM_DECADES,
     ) -> None:
         self.SAVE_PATH = SAVE_PATH
         self.DECADE = DECADE
@@ -34,6 +35,7 @@ class ClassifyArticles:
         self.SELECTED_DECADE = os.path.join(
             self.SAVE_PATH, "labeled_articles", self.DECADE
         )
+        self.CUSTOM_DECADES = CUSTOM_DECADES
         self.grid_params = {
             "tfidfvectorizer__analyzer": ["word"],
             "tfidfvectorizer__token_pattern": [r"\w{1,}"],
@@ -51,7 +53,7 @@ class ClassifyArticles:
 
         if self.CUSTOM_LABELS is True:
             logger.info("Using all decades to train")
-            decades = ["1970s", "1980s", "1990s"]
+            decades = self.CUSTOM_DECADES
             first = True
             for i in decades:
                 if i is not self.DECADE:

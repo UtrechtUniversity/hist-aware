@@ -7,36 +7,39 @@ import src.utils.keywords as kw
 
 class Settings(BaseSettings):
     # Data directory in base path
-    DATA_DIR = "data"
+    DATA_DIR: str = "data"
     #  Data directory for saving files within DATA_DIR
-    DATA_DIR_SAVE = "processed"
+    DATA_DIR_SAVE: str = "processed"
     # Data directory for raw files within DATA_DIR
-    DATA_DIR_RAW = "raw"
+    DATA_DIR_RAW: str = "raw"
     # Name of delpher directory
-    DATA_DIR_DELPHER = "delpher"
+    DATA_DIR_DELPHER: str = "delpher"
 
     # Bool to ungizp metadata, do only once!
-    UNGIZP = False
+    UNGIZP: bool = True
     # Decide whether to process and save articles and metadata data
-    DATAFILE = {
-        "start": "False",
-        "metadata": "False",
-        "articles": "False",
+    DATAFILE: Dict = {
+        "start": "True",
+        "metadata": "True",
+        "articles": "True",
     }
-    # Arguments to use for text search
-    SEARCH_WORDS = False
-    LIST_INCL_WORDS = kw.KEYWORDS_GAS
-    LIST_EXCL_WORDS = kw.EXCL_WORDS_GAS
-    PREPROCESS = False
-    CLASSIFY = True
+    # Run search words and add metadata to articles csv
+    SEARCH_WORDS: bool = False
+    LIST_INCL_WORDS: Any = kw.KEYWORDS_GAS
+    LIST_EXCL_WORDS: Any = kw.EXCL_WORDS_GAS
+    # Preprocess articles for labeling
+    PREPROCESS: bool = True
+    # Run classification model
+    CLASSIFY: bool = False
 
     # Selected topic and decade
-    TOPIC = "olie"
-    DECADE = "1970s"
+    TOPIC: str = "gas"
+    DECADE: str = "1960s"
 
     # If other decade than current used to classify with NB
     # set custom labels to True and select the decade below
-    CUSTOM_LABELS = True
+    CUSTOM_LABELS: bool = True
+    CUSTOM_DECADES: List = ["1970s", "1980s", "1990s"]
 
     class Config:
         case_sensitive = True
