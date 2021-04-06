@@ -87,16 +87,22 @@ class PipelineArticles:
     def ungzip_metadata_files(self) -> None:
         """Ungizp the metadata files in data/raw."""
 
-        # TODO: make the ungizip iterate over the entire data
         logger.debug("Ungzipping metadata")
-        ungzip_metdata(dir_path=self.RAW_DECADE, file_type=".gz")
+        if not os.path.isfile(os.path.join(self.INFO_DECADE, "metadata_list.csv")):
+            list_metadata = ungzip_metdata(dir_path=self.RAW_DECADE, file_type=".gz")
+            df = pd.DataFrame(list_metadata)
+            df.to_csv(os.path.join(self.INFO_DECADE, "metadata_list.csv"))
+            logger.debug("Saved list of metadata locations.")
+        else:
+            logger.debug(
+                "Metadata locations already exists. Skipping ungzipping metadata."
+            )
 
-    # TODO: Create two functions out of this
     def iterate_directories(self) -> None:
         """Iterate directories to catalogue files."""
         if not os.path.isfile(os.path.join(self.INFO_DECADE, "article_info.csv")):
             # Iterate in the directory and retrieve all the xml article names
-            logger.debug("Retrieving article information")
+            logger.debug("Retrieving article information.")
             xml_article_names = iterate_directory(
                 dir_path=self.RAW_DECADE, file_type=".xml"
             )
@@ -107,9 +113,9 @@ class PipelineArticles:
             self.article_names.to_csv(
                 os.path.join(self.INFO_DECADE, "article_info.csv")
             )
-            logger.debug("Articles list saved")
+            logger.debug("Articles list saved.")
         else:
-            logger.debug("Articles list already exists. Skipping")
+            logger.debug("Articles list already exists. Skipping.")
 
         # Iterate in the directory and retrieve all the names of the metadata
         if not os.path.isfile(os.path.join(self.INFO_DECADE, "metadata_info.csv")):

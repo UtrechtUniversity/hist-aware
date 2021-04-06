@@ -15,14 +15,17 @@ def ungzip_metdata(dir_path, file_type):
     """Iterate over the `path_dir` and its children and
     ungizp the .gz metadata files found.
     """
+    metadata_list = []
 
     for subdir, dirs, files in os.walk(dir_path, topdown=True):
         for file in files:
             # logger.debug(f"{file}")
             filepath = subdir + os.sep + file
             if filepath.endswith(str(file_type)):
+                metadata_list.append(filepath)
                 with gzip.open(filepath, "rb") as f, open(filepath + ".xml", "wb") as r:
                     shutil.copyfileobj(f, r, 65536)
+    return metadata_list
 
 
 def iterate_directory(dir_path, file_type):
@@ -207,7 +210,12 @@ def iterate_files(
 
 
 def iterate_metadata(
-    save_path, files, save_each=1000, progress_each=1000, restart=False, index_restart=0
+    save_path,
+    files,
+    save_each=50000,
+    progress_each=10000,
+    restart=False,
+    index_restart=0,
 ):
     """Iterate through files `metadata`, parse them and concatenate
     the result to be saved as a DataFrame in a csv object (.csv)
@@ -215,17 +223,17 @@ def iterate_metadata(
     To restart the iteration, set `restart=True` and select the index from which the
     iteration should restart with `index_restart`.
     """
-    list_metadata = []
+    list_articles_metadata = []
 
     if restart is False:
         previous_i = 0
         current_i = 0
         i = 0
         cnt = 0
-        list_metadata = []
+        list_articles_metadata = []
         for index, row in tqdm(files.iterrows(), total=files.shape[0]):
             try:
-                list_metadata.append(
+                list_articles_metadata.append(
                     parsers.parse_XML_metadata(
                         path=row["metadata_path"],
                         met_dir=row["metadata_dir"],
@@ -234,18 +242,18 @@ def iterate_metadata(
                     )
                 )
             except Exception:
-                # logger.debug(f"Something missing at index: {index}")
+                logger.debug(f"Something missing at index: {index}")
                 continue
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
                 _save_to_csv(
-                    save_path, "metadata", previous_i, current_i, list_metadata
+                    save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
-                list_metadata = []
+                list_articles_metadata = []
                 previous_i = current_i
                 i = 0
-            # Each 100 files, print the progress
+            # Each Xfiles, print the progress
             if i % progress_each == 0:
                 # clear_output(wait=True)
                 logger.debug("Files parsed: " + str(progress_each * cnt))
@@ -260,9 +268,9 @@ def iterate_metadata(
             if index == len(files) - 1:
                 current_i = current_i + i
                 _save_to_csv(
-                    save_path, "metadata", previous_i, current_i, list_metadata
+                    save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
-                list_metadata = []
+                list_articles_metadata = []
                 previous_i = current_i
                 i = 0
             i += 1
@@ -271,10 +279,10 @@ def iterate_metadata(
         current_i = index_restart
         i = 0
         cnt = index_restart / progress_each
-        list_metadata = []
+        list_articles_metadata = []
         for index, row in files.iloc[index_restart:].iterrows():
             try:
-                list_metadata.append(
+                list_articles_metadata.append(
                     parsers.parse_XML_metadata(
                         path=row["metadata_path"],
                         met_dir=row["metadata_dir"],
@@ -283,18 +291,18 @@ def iterate_metadata(
                     )
                 )
             except Exception:
-                # logger.debug(f"Something missing at index: {index}")
+                logger.debug(f"Something missing at index: {index}")
                 continue
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
                 _save_to_csv(
-                    save_path, "metadata", previous_i, current_i, list_metadata
+                    save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
-                list_metadata = []
+                list_articles_metadata = []
                 previous_i = current_i
                 i = 0
-            # Each 100 files, print the progress
+            # Each X files, print the progress
             if i % progress_each == 0:
                 # clear_output(wait=True)
                 logger.debug("Files parsed: " + str(progress_each * cnt))
@@ -309,9 +317,9 @@ def iterate_metadata(
             if index == len(files) - 1:
                 current_i = current_i + i
                 _save_to_csv(
-                    save_path, "metadata", previous_i, current_i, list_metadata
+                    save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
-                list_metadata = []
+                list_articles_metadata = []
                 previous_i = current_i
                 i = 0
             i += 1
