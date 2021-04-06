@@ -242,7 +242,8 @@ class PipelineArticles:
                     columns={"filepath": "article_filepath", "index": "index_article"},
                     inplace=True,
                 )
-                df_joined = df_articles.merge(self.df_metadata, how="left", on="title")
+                df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
+                df_joined.drop(columns=["Unnamed: 0", "Unnamed: 0_x", "Unnamed: 0_y"])
                 NAME = self.TOPIC + "_" + str(i)
                 NAME_JOINED = os.path.join(self.MERGED_DECADE, NAME)
                 df_joined.to_csv(NAME_JOINED)
