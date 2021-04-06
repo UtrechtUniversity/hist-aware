@@ -212,7 +212,7 @@ def iterate_files(
 def iterate_metadata(
     save_path,
     files,
-    save_each=50000,
+    save_each=10000,
     progress_each=10000,
     restart=False,
     index_restart=0,
@@ -241,8 +241,8 @@ def iterate_metadata(
                         index=row["index"],
                     )
                 )
-            except Exception:
-                logger.debug(f"Something missing at index: {index}")
+            except Exception as e:
+                logger.debug(e)
                 continue
             # Each X, save the file in a .csv
             if i == save_each:
@@ -290,8 +290,8 @@ def iterate_metadata(
                         index=row["index"],
                     )
                 )
-            except Exception:
-                logger.debug(f"Something missing at index: {index}")
+            except Exception as e:
+                logger.debug(e)
                 continue
             # Each X, save the file in a .csv
             if i == save_each:

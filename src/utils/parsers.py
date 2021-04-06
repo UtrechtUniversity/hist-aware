@@ -3,6 +3,7 @@ from datetime import datetime
 from functools import reduce
 import re
 import pathlib
+import xmltodict
 import xml.etree.ElementTree as et
 
 
@@ -67,7 +68,7 @@ def parse_XML_metadata(path, met_dir, title, index):
         temp_data = doc["didl:DIDL"]["didl:Item"]["didl:Component"][0]["didl:Resource"][
             "srw_dc:dcx"
         ]
-        pages = doc["didl:DIDL"]["didl:Item"]  # ["didl:Item"]
+        pages = doc["didl:DIDL"]["didl:Item"]
 
     metadata["metadata_title"] = title
     metadata["date"] = date

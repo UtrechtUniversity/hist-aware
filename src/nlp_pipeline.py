@@ -207,6 +207,24 @@ class PipelineArticles:
             inplace=True,
         )
 
+    def merge_metadata_articles(self):
+        li = []
+
+        # Read all the metadata into one file
+        for index, row in self.csv_metadata.iterrows():
+            csv_file = pd.read_csv(row["csv_path"])
+            li.append(csv_file)
+
+        self.df_metadata = pd.concat(li, axis=0)
+        # print(self.df_metadata.columns.values)
+        self.df_metadata.drop(columns=["date"], inplace=True)
+        self.df_metadata.rename(
+            columns={"filepath": "metadata_filepath", "index": "index_metadata"},
+            inplace=True,
+        )
+
+        return None
+
     def search_synonyms(self) -> None:
         """Using the processed and saved data, search the synonyms"""
         li = []
@@ -223,6 +241,25 @@ class PipelineArticles:
             columns={"filepath": "metadata_filepath", "index": "index_metadata"},
             inplace=True,
         )
+        self.df_metadata.sort_values(by=["index"], ascending=True)
+
+        li = []
+        logger.info("Searching keywords")
+        # Load processed articles iteratively
+        for i, row in tqdm(
+            self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
+        ):
+            csv_file = pd.read_csv(row["csv_path"])
+            li.append(csv_file)
+            if i % 20 == 0:
+                logger.debug(f"Currently parsed {i*50000} articles")
+                df_articles = pd.concat(li, axis=0)
+                df_articles.sort_values(by=["index"], ascending=True)
+                df_articles.rename(
+                    columns={"filepath": "article_filepath", "index": "index_article"},
+                    inplace=True,
+                )
+                df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
 
         # Search synonyms in saved articles
         li = []

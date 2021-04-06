@@ -16,19 +16,19 @@ class Settings(BaseSettings):
     DATA_DIR_DELPHER: str = "delpher"
 
     # Bool to ungizp metadata, do only once!
-    UNGIZP: bool = True
+    UNGIZP: bool = False
     # Decide whether to process and save articles and metadata data
     DATAFILE: Dict = {
         "start": "True",
         "metadata": "True",
-        "articles": "True",
+        "articles": "False",
     }
     # Run search words and add metadata to articles csv
     SEARCH_WORDS: bool = False
     LIST_INCL_WORDS: Any = kw.KEYWORDS_GAS
     LIST_EXCL_WORDS: Any = kw.EXCL_WORDS_GAS
     # Preprocess articles for labeling
-    PREPROCESS: bool = True
+    PREPROCESS: bool = False
     # Run classification model
     CLASSIFY: bool = False
 
