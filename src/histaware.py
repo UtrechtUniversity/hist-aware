@@ -66,7 +66,7 @@ if __name__ == "__main__":
         pipe.merge_metadata_articles()
 
     if settings.SEARCH_WORDS is True:
-        logger.info("Search synonyms")
+        logger.info("Select articles using keywords")
         pipe.search_synonyms()
 
     if settings.PREPROCESS is True:

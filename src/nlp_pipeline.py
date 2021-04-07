@@ -25,6 +25,7 @@ from utils.iterators import (
 )
 from article_selection import select_articles
 from preprocess import TextCleaner
+from utils import utils
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
@@ -84,7 +85,7 @@ class PipelineArticles:
                 index=False,
                 mode=write_mode,
                 header=header,
-                quoting=csv.QUOTE_MINIMAL,
+                quoting=csv.QUOTE_NONNUMERIC,
             )
 
     def ungzip_metadata_files(self) -> None:
@@ -211,97 +212,102 @@ class PipelineArticles:
         )
 
     def merge_metadata_articles(self):
+        """Merge metadata and articles."""
+
         li = []
 
         # Read all the metadata into one file
         for index, row in self.csv_metadata.iterrows():
             csv_file = pd.read_csv(row["csv_path"])
+            csv_file = utils.clean_article_identifier(csv_file)
+            logger.debug("Loaded metadata")
             li.append(csv_file)
 
         self.df_metadata = pd.concat(li, axis=0)
-        # print(self.df_metadata.columns.values)
         self.df_metadata.drop(columns=["date"], inplace=True)
+        self.df_metadata = self.df_metadata[self.df_metadata["subject"] == "artikel"]
+        self.df_metadata.drop_duplicates(subset=["recordIdentifier"], inplace=True)
         self.df_metadata.rename(
-            columns={"filepath": "metadata_filepath", "index": "index_metadata"},
+            columns={
+                "filepath": "metadata_filepath",
+                "index": "index_metadata",
+            },
             inplace=True,
         )
 
         li = []
-        logger.info("Searching keywords")
         # Load processed articles iteratively
         for i, row in tqdm(
             self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
         ):
             csv_file = pd.read_csv(row["csv_path"])
             li.append(csv_file)
-            if i % 30 == 0:
-                logger.debug(f"Currently parsed {i*50000} articles")
-                df_articles = pd.concat(li, axis=0)
-                df_articles.sort_values(by=["index"], ascending=True)
-                df_articles.rename(
-                    columns={"filepath": "article_filepath", "index": "index_article"},
-                    inplace=True,
-                )
-                df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
-                df_joined.drop(columns=["Unnamed: 0", "Unnamed: 0_x", "Unnamed: 0_y"])
-                NAME = self.TOPIC + "_" + str(i)
-                NAME_JOINED = os.path.join(self.MERGED_DECADE, NAME)
-                df_joined.to_csv(NAME_JOINED)
-                li = []
-
+            if i != 0:
+                if i % 20 == 0:
+                    logger.debug(f"Currently merging {i*50000} articles")
+                    df_articles = pd.concat(li, axis=0)
+                    df_articles.sort_values(by=["index"], ascending=True)
+                    df_articles.rename(
+                        columns={
+                            "filepath": "article_filepath",
+                            "index": "index_article",
+                        },
+                        inplace=True,
+                    )
+                    df_joined = df_articles.merge(
+                        self.df_metadata,
+                        how="left",
+                        left_on="article_name",
+                        right_on="transformedRecordIdentifier",
+                    )
+                    NAME = self.TOPIC + "_" + str(i) + ".csv"
+                    NAME_JOINED = os.path.join(self.MERGED_DECADE, NAME)
+                    # Drop newly created columns in merge
+                    df_joined.drop(
+                        columns=[
+                            "Unnamed: 0_x",
+                            "Unnamed: 0_y",
+                            "title_y",  # eliminate title from metadata we already have it
+                            "dir_y",  # eliminate directory we already have
+                        ],
+                        inplace=True,
+                    )
+                    df_joined.rename(
+                        columns={
+                            "dir_x": "dir",
+                            "title_x": "title",
+                        },
+                        inplace=True,
+                    )
+                    df_joined.to_csv(NAME_JOINED, quoting=csv.QUOTE_NONNUMERIC)
+                    li = []
+                    df_articles = pd.DataFrame()
         return None
 
     def search_synonyms(self) -> None:
         """Using the processed and saved data, search the synonyms"""
-        li = []
 
-        # Read all the metadata into one file
-        for index, row in self.csv_metadata.iterrows():
-            csv_file = pd.read_csv(row["csv_path"])
-            li.append(csv_file)
-
-        self.df_metadata = pd.concat(li, axis=0)
-        # print(self.df_metadata.columns.values)
-        self.df_metadata.drop(columns=["date"], inplace=True)
-        self.df_metadata.rename(
-            columns={"filepath": "metadata_filepath", "index": "index_metadata"},
-            inplace=True,
+        logger.info("Searching keywords in merged dataframes.")
+        self.csv_merged = iterate_directory(
+            dir_path=os.path.join(self.MERGED_DECADE),
+            file_type=".csv",
         )
-        self.df_metadata.sort_values(by=["index"], ascending=True)
+        i = 1
+        for csv_file in tqdm(self.csv_merged, total=len(self.csv_merged)):
+            # for i, row in tqdm(self.csv_merged.iterrows(), total=self.csv_merged.shape[0]):
+            df = pd.read_csv(csv_file["article_path"])  # "article" but actually csv
+            df = df.explode("p")
 
-        # Search synonyms in saved articles
-        li = []
-        logger.info("Searching keywords")
-        # Load processed articles iteratively
-        for i, row in tqdm(
-            self.csv_articles.iterrows(), total=self.csv_articles.shape[0]
-        ):
-            csv_file = pd.read_csv(row["csv_path"])
-            li.append(csv_file)
-            if i % 20 == 0:
-                logger.debug(f"Currently parsed {i*50000} articles")
-                df_articles = pd.concat(li, axis=0)
-                df_articles.sort_values(by=["index"], ascending=True)
-                df_articles.rename(
-                    columns={"filepath": "article_filepath", "index": "index_article"},
-                    inplace=True,
-                )
-                df_joined = df_articles.merge(self.df_metadata, how="left", on="dir")
-
-                # Search for keywords in loaded csvs
-                selected_art = select_articles(
-                    words=self.KEYWORDS,
-                    excl_words=self.EXCL_WORDS,
-                    df=df_joined,
-                )
-                today = datetime.now()
-                NAME = str(today.date()) + "_" + self.TOPIC + "_" + str(i)
-                self.write_to_disk(file_name=NAME, file_data=selected_art)
-
-                # Reset for next iteration
-                selected_art = []
-                df_articles = pd.DataFrame
-                li = []
+            # Search for keywords in loaded csvs
+            selected_art = select_articles(
+                words=self.KEYWORDS,
+                excl_words=self.EXCL_WORDS,
+                df=df,
+            )
+            today = datetime.now()
+            NAME = str(today.date()) + "_" + self.TOPIC + "_" + str(i)
+            self.write_to_disk(file_name=NAME, file_data=selected_art)
+            i += 1
 
     def process_selected_articles(self):
         tqdm.pandas()
@@ -317,13 +323,21 @@ class PipelineArticles:
             [pd.read_csv(c["article_path"]) for c in csv_temp], ignore_index=True
         )
         # Initial clean
-        df.drop_duplicates(subset=["text"], inplace=True)
+        # df.drop_duplicates(subset=["p"], inplace=True)
         df.sort_values(by=["count"], ascending=False, inplace=True)
         df.reset_index(inplace=True)
-        df.drop(columns={"index", "Unnamed: 0_x", "Unnamed: 0_y"}, inplace=True)
+        df.drop(
+            columns={
+                "index",
+                "Unnamed: 0_x",
+                "Unnamed: 0_y",
+                "Unnamed: 0",
+            },
+            inplace=True,
+        )
 
         # Preprocess text to text_clean
-        res = df["text"].progress_apply(self.tc.preprocess)
+        res = df["p"].progress_apply(self.tc.preprocess)
         # res = self.parallelize_dataframe(df=df["text"], func=self.tc.preprocess, n_cores=6)
         df["text_clean"] = res
 

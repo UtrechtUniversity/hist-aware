@@ -162,26 +162,26 @@ class ClassifyArticles:
         PREDICT_PATH = os.path.join(
             self.SAVE_PATH, "labeled_articles", DECADE_TO_PREDICT, PREDICT_FILE
         )
-        test = pd.read_csv(PREDICT_PATH)
-        test.rename(columns={"label": "sentiment"}, inplace=True)
-        test["sentiment"] = None
+        df = pd.read_csv(PREDICT_PATH)
+        df.rename(columns={"label": "sentiment"}, inplace=True)
+        df["sentiment"] = None
 
         # Select only new rows and not the training set
-        test_df = test.loc[~test.index_article.isin(self.train.index_article)].copy()
+        new_df = df.loc[~df.index_article.isin(self.train.index_article)].copy()
 
         # Drop na and titles
-        test_df.dropna(0, subset=["text_clean"], inplace=True)
-        test_df = test_df[test_df["type"] != "title"].copy()
+        new_df.dropna(0, subset=["text_clean"], inplace=True)
+        new_df = new_df[new_df["type"] != "title"].copy()
 
         # Predict new values
-        self.x_test = test_df["text_clean"].values
+        self.x_test = new_df["text_clean"].values
         self.y_test = pipe.predict_proba(self.x_test)
 
         # Add predicted values (y --> 1) to dataframe
-        test_df["sentiment"] = self.y_test[:, 1]
+        new_df["sentiment"] = self.y_test[:, 1]
 
         # Select only values above threshold
-        self.df_labeled = test_df[test_df["sentiment"] >= THRESHOLD]
+        self.df_labeled = new_df[new_df["sentiment"] >= THRESHOLD]
 
         # Save labeled df
         self.df_labeled.to_csv(
