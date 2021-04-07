@@ -1,3 +1,4 @@
+import os
 import re
 from tqdm import tqdm
 
@@ -19,3 +20,10 @@ def clean_article_identifier(csv):
         lambda row: clean_iter(row["recordIdentifier"]), axis=1
     )
     return csv
+
+
+def make_noise():
+    """Make noise after finishing executing a code"""
+    duration = 4  # seconds
+    freq = 440  # Hz
+    os.system("play -nq -t alsa synth {} sine {}".format(duration, freq))

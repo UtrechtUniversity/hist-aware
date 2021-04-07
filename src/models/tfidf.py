@@ -158,9 +158,9 @@ class ClassifyArticles:
         One dataset at a time, that can be different that the one
         used to create the model.
         """
-        PREDICT_FILE = f"{DECADE_TO_PREDICT}_{self.TOPIC}_to_label.csv"
+        PREDICT_FILE = f"to_label_{self.TOPIC}.csv"
         PREDICT_PATH = os.path.join(
-            self.SAVE_PATH, "labeled_articles", DECADE_TO_PREDICT, PREDICT_FILE
+            self.SAVE_PATH, "selected_articles", DECADE_TO_PREDICT, PREDICT_FILE
         )
         df = pd.read_csv(PREDICT_PATH)
         df.rename(columns={"label": "sentiment"}, inplace=True)

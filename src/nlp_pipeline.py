@@ -16,16 +16,16 @@ from tqdm import tqdm
 from typing import Any
 
 # Import modules
-from utils.iterators import (
+from src.utils.iterators import (
     iterate_directory,
     iterate_metadata,
     iterate_files,
     ungzip_metdata,
     iterate_directory_gz,
 )
-from article_selection import select_articles
-from preprocess import TextCleaner
-from utils import utils
+from src.article_selection import select_articles
+from src.preprocess import TextCleaner
+from src.utils import utils
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
@@ -329,16 +329,12 @@ class PipelineArticles:
         df.drop(
             columns={
                 "index",
-                "Unnamed: 0_x",
-                "Unnamed: 0_y",
-                "Unnamed: 0",
             },
             inplace=True,
         )
 
         # Preprocess text to text_clean
         res = df["p"].progress_apply(self.tc.preprocess)
-        # res = self.parallelize_dataframe(df=df["text"], func=self.tc.preprocess, n_cores=6)
         df["text_clean"] = res
 
         # Add label column for labeling

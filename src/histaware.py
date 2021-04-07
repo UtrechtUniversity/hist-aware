@@ -11,6 +11,7 @@ from src.nlp_pipeline import PipelineArticles
 from src.models.tfidf import ClassifyArticles
 from src.core.config import Settings
 import src.utils.keywords as kw
+from src.utils import utils
 
 # Import modules
 sys.path.insert(0, "..")
@@ -90,3 +91,5 @@ if __name__ == "__main__":
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.95)
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.98)
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.99)
+
+        utils.make_noise()
