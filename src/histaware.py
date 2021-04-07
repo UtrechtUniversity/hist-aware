@@ -87,6 +87,8 @@ if __name__ == "__main__":
             sampler=SMOTE(),
             classifier=MultinomialNB(),
         )
+        # Predict at multiple threshold to have freedom in the number
+        # of article to select to be used for the sentiment analysis
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.90)
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.95)
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.98)

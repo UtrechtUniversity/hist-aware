@@ -39,13 +39,13 @@ class ClassifyArticles:
         self.grid_params = {
             "tfidfvectorizer__analyzer": ["word"],
             "tfidfvectorizer__token_pattern": [r"\w{1,}"],
-            "tfidfvectorizer__ngram_range": [(1, 1), (1, 2), (1, 3)],
-            "tfidfvectorizer__smooth_idf": [True, False],
+            "tfidfvectorizer__ngram_range": [(1, 1), (1, 2)],
+            "tfidfvectorizer__smooth_idf": [True],
             "tfidfvectorizer__sublinear_tf": [1],
             "tfidfvectorizer__strip_accents": ["unicode"],
-            "tfidfvectorizer__use_idf": [True, False],
+            "tfidfvectorizer__use_idf": [True],
             "tfidfvectorizer__min_df": [1, 2, 3],
-            "tfidfvectorizer__max_features": [None, 5000, 10000, 50000, 100000],
+            "tfidfvectorizer__max_features": [None, 50000, 100000],
         }
 
     def load(self):
@@ -141,7 +141,7 @@ class ClassifyArticles:
         )
 
         # define thresholds
-        thresholds = arange(0, 1, 0.001)
+        thresholds = arange(0.5, 1, 0.01)
         # evaluate each threshold
         scores = [
             f1_score(self.test_y, self.to_labels(y_hat[:, 1], t)) for t in thresholds
@@ -171,7 +171,7 @@ class ClassifyArticles:
 
         # Drop na and titles
         new_df.dropna(0, subset=["text_clean"], inplace=True)
-        new_df = new_df[new_df["type"] != "title"].copy()
+        new_df = new_df[new_df["subject"] == "artikel"].copy()
 
         # Predict new values
         self.x_test = new_df["text_clean"].values
