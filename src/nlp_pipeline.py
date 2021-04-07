@@ -260,7 +260,7 @@ class PipelineArticles:
                         left_on="article_name",
                         right_on="transformedRecordIdentifier",
                     )
-                    NAME = self.TOPIC + "_" + str(i) + ".csv"
+                    NAME = "merged_" + self.DECADE + "_" + str(i) + ".csv"
                     NAME_JOINED = os.path.join(self.MERGED_DECADE, NAME)
                     # Drop newly created columns in merge
                     df_joined.drop(
