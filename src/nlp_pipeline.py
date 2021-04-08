@@ -85,7 +85,7 @@ class PipelineArticles:
                 index=False,
                 mode=write_mode,
                 header=header,
-                quoting=csv.QUOTE_NONNUMERIC,
+                quoting=csv.QUOTE_MINIMAL,
             )
 
     def ungzip_metadata_files(self) -> None:
@@ -136,7 +136,7 @@ class PipelineArticles:
             )
             logger.debug("Metadata list saved")
         else:
-            logger.debug("Articles list already exists. Skipping")
+            logger.debug("Metadata list already exists. Skipping")
 
     def process_metdata(self, save_path, files) -> None:
         if self.DATAFILE["metadata"] == "True":
@@ -284,7 +284,7 @@ class PipelineArticles:
                     df_articles = pd.DataFrame()
         return None
 
-    def search_synonyms(self) -> None:
+    def search_words(self) -> None:
         """Using the processed and saved data, search the synonyms"""
 
         logger.info("Searching keywords in merged dataframes.")
@@ -296,6 +296,8 @@ class PipelineArticles:
         for csv_file in tqdm(self.csv_merged, total=len(self.csv_merged)):
             # for i, row in tqdm(self.csv_merged.iterrows(), total=self.csv_merged.shape[0]):
             df = pd.read_csv(csv_file["article_path"])  # "article" but actually csv
+            # Only search in articles
+            df = df[df["subject"] == "artikel"]
             df = df.explode("p")
 
             # Search for keywords in loaded csvs

@@ -56,25 +56,21 @@ class ClassifyArticles:
             decades = self.CUSTOM_DECADES
             first = True
             for i in decades:
-                if i is not self.DECADE:
-                    if first is True:
-                        DECADE_PATH = os.path.join(
-                            self.SAVE_PATH, "labeled_articles", i
-                        )
-                        LABELS_PATH = os.path.join(
-                            DECADE_PATH, f"{i}_{self.TOPIC}_labeled.csv"
-                        )
-                        train = pd.read_csv(LABELS_PATH)
-                        first = False
-                    if first is False:
-                        DECADE_PATH = os.path.join(
-                            self.SAVE_PATH, "labeled_articles", i
-                        )
-                        LABELS_PATH = os.path.join(
-                            DECADE_PATH, f"{i}_{self.TOPIC}_labeled.csv"
-                        )
-                        train_temp = pd.read_csv(LABELS_PATH)
-                        train = pd.concat([train, train_temp], ignore_index=True)
+                # if i is not self.DECADE:
+                if first is True:
+                    DECADE_PATH = os.path.join(self.SAVE_PATH, "labeled_articles", i)
+                    LABELS_PATH = os.path.join(
+                        DECADE_PATH, f"{i}_{self.TOPIC}_labeled.csv"
+                    )
+                    train = pd.read_csv(LABELS_PATH)
+                    first = False
+                if first is False:
+                    DECADE_PATH = os.path.join(self.SAVE_PATH, "labeled_articles", i)
+                    LABELS_PATH = os.path.join(
+                        DECADE_PATH, f"{i}_{self.TOPIC}_labeled.csv"
+                    )
+                    train_temp = pd.read_csv(LABELS_PATH)
+                    train = pd.concat([train, train_temp], ignore_index=True)
         else:
             train = pd.read_csv(
                 os.path.join(

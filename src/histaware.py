@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     if settings.SEARCH_WORDS is True:
         logger.info("Select articles using keywords")
-        pipe.search_synonyms()
+        pipe.search_words()
 
     if settings.PREPROCESS is True:
         logger.info("Preprocess selected articles for labeling")

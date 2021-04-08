@@ -88,7 +88,7 @@ def _save_to_csv(save_path, data_list_name, pre_i, cur_i, articles):
         save_path,
         data_list_name + str(pre_i) + "_" + str(cur_i) + ".csv",
     )
-    main = pd.DataFrame.from_dict(chain.from_iterable(articles))  # list(chain())?
+    main = pd.DataFrame.from_dict(articles)  # list(chain())?
     main.to_csv(file_path)
 
 
