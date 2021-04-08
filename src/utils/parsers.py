@@ -83,22 +83,14 @@ def parse_XML_metadata(path, met_dir, title, index):
             articles = p["didl:Item"]
             for article in range(len(articles)):
                 article_dict = {}
-                art = articles[article]
-                article_dict["subject"] = art["didl:Component"][0]["didl:Resource"][
+                art = articles[article]["didl:Component"][0]["didl:Resource"][
                     "srw_dc:dcx"
-                ]["dc:subject"]
-                article_dict["title"] = art["didl:Component"][0]["didl:Resource"][
-                    "srw_dc:dcx"
-                ]["dc:title"]
-                article_dict["access_rights"] = art["didl:Component"][0][
-                    "didl:Resource"
-                ]["srw_dc:dcx"]["dcterms:accessRights"]
-                article_dict["recordIdentifier"] = art["didl:Component"][0][
-                    "didl:Resource"
-                ]["srw_dc:dcx"]["dcx:recordIdentifier"]
-                article_dict["identifier"] = art["didl:Component"][0]["didl:Resource"][
-                    "srw_dc:dcx"
-                ]["dc:identifier"]
+                ]
+                article_dict["subject"] = deep_get(art, "dc:subject")
+                article_dict["title"] = deep_get(art, "dc:title")
+                article_dict["access_rights"] = deep_get(art, "dcterms:accessRights")
+                article_dict["recordIdentifier"] = deep_get(art, "dcx:recordIdentifier")
+                article_dict["identifier"] = deep_get(art, "dc:identifier")
                 # Append newspaper-and metadata-specific data
                 article_dict.update(metadata)
                 list_articles.append(article_dict)

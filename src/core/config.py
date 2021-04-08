@@ -15,28 +15,28 @@ class Settings(BaseSettings):
     # Name of delpher directory
     DATA_DIR_DELPHER: str = "delpher"
 
+    # Select decade
+    DECADE: str = "1970s"
     # Bool to ungizp metadata, do only once!
     UNGIZP: bool = False
     # Decide whether to process and save articles and metadata data
     DATAFILE: Dict = {
         "start": "True",
-        "metadata": "False",
-        "articles": "True",
+        "metadata": "True",
+        "articles": "False",
     }
     # Merge articles and metadata
-    MERGE: bool = False
+    MERGE: bool = True
+    # Selected topic
+    TOPIC: str = "coal"
     # Run search words and add metadata to articles csv
     SEARCH_WORDS: bool = False
-    LIST_INCL_WORDS: Any = kw.KEYWORDS_GAS
-    LIST_EXCL_WORDS: Any = kw.EXCL_WORDS_GAS
+    LIST_INCL_WORDS: Any = kw.KEYWORDS_KOOL
+    LIST_EXCL_WORDS: Any = kw.EXCL_WORDS_KOOL
     # Preprocess articles for labeling
     PREPROCESS: bool = False
     # Run classification model
     CLASSIFY: bool = False
-
-    # Selected topic and decade
-    TOPIC: str = "gas"
-    DECADE: str = "1960s"
 
     # If other decade than current used to classify with NB
     # set custom labels to True and select the decade below
