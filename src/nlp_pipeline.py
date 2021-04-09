@@ -335,8 +335,15 @@ class PipelineArticles:
         )
 
         # Split p into original paragraphs
+        logger.debug(
+            f"Numer of articles before splitting into paragraphs: {df.shape[0]}"
+        )
+        df = df[df["subject"] == "artikel"]
         df["p"] = df.apply(lambda row: repr(row["p"]).split("\\',"), axis=1)
         df = df.explode("p")
+        logger.debug(
+            f"Numer of articles after splitting into paragraphs: {df.shape[0]}"
+        )
         # Preprocess text to text_clean
         res = df["p"].progress_apply(self.tc.preprocess)
         df["text_clean"] = res
@@ -345,8 +352,13 @@ class PipelineArticles:
         res = df["p"].progress_apply(self.tc.clean)
         df["p"] = res
 
+        # Eliminate paragraphs that do not contain anything
+        df.dropna(subset=["p"], inplace=True)
+        logger.debug(
+            f"Numer of articles after cleaning and eliminating null paragraphs: {df.shape[0]}"
+        )
         # Add label column for labeling
-        df.insert(1, "label", "")
+        df["sentiment"] = ""
         df_name = "to_label_" + str(self.TOPIC) + ".csv"
 
         # Save
