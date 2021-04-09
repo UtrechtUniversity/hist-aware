@@ -51,14 +51,24 @@ class TextCleaner:
         )
         return self
 
+    def keep_standard_chars(self):
+        self.text = "".join([re.sub(r"[^-0-9\w,. ?!()%/]", r"", c) for c in self.text])
+        return self
+
     def preprocess(self, text):
         self.text = text
         self = self.get_words()
         self = self.lower()
         self = self.remove_stopwords()
         self = self.remove_numeric()
-        self = self.remove_non_ascii()
         self = self.remove_extra_whitespace_tabs()
         self = self.remove_one_char()
         self = self.remove_non_words()
+        return self.text
+
+    def clean(self, text):
+        self.text = text
+        self = self.get_words()
+        self = self.keep_standard_chars()
+        self = self.remove_extra_whitespace_tabs()
         return self.text

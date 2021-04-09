@@ -298,7 +298,6 @@ class PipelineArticles:
             df = pd.read_csv(csv_file["article_path"])  # "article" but actually csv
             # Only search in articles
             df = df[df["subject"] == "artikel"]
-            df = df.explode("p")
 
             # Search for keywords in loaded csvs
             selected_art = select_articles(
@@ -335,9 +334,16 @@ class PipelineArticles:
             inplace=True,
         )
 
+        # Split p into original paragraphs
+        df["p"] = df.apply(lambda row: repr(row["p"]).split("\\',"), axis=1)
+        df = df.explode("p")
         # Preprocess text to text_clean
         res = df["p"].progress_apply(self.tc.preprocess)
         df["text_clean"] = res
+
+        # Preprocess p to cleaner p
+        res = df["p"].progress_apply(self.tc.clean)
+        df["p"] = res
 
         # Add label column for labeling
         df.insert(1, "label", "")
