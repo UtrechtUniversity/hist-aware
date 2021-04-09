@@ -336,13 +336,13 @@ class PipelineArticles:
 
         # Split p into original paragraphs
         logger.debug(
-            f"Numer of articles before splitting into paragraphs: {df.shape[0]}"
+            f"Number of articles before splitting into paragraphs: {df.shape[0]}"
         )
         df = df[df["subject"] == "artikel"]
         df["p"] = df.apply(lambda row: repr(row["p"]).split("\\',"), axis=1)
         df = df.explode("p")
         logger.debug(
-            f"Numer of articles after splitting into paragraphs: {df.shape[0]}"
+            f"Number of articles after splitting into paragraphs: {df.shape[0]}"
         )
         # Preprocess text to text_clean
         res = df["p"].progress_apply(self.tc.preprocess)
