@@ -1,5 +1,7 @@
 # Config
 src/core/config.py
+*.json
+*.arrow
 
 # Data
 data/raw/**/*
