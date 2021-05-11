@@ -6,11 +6,11 @@ import tensorflow as tf
 
 
 FLAGS = {
-    'input_file': '/home/leonardovida/data/volume_1/data-histaware/pretrain-data/tf_pretrain_*.tfrecord',  # 9,648,789 examples
-    'output_dir': '/home/leonardovida/data/volume_1/data-histaware/pretrain-data/pretraining-data-shuffled',
-    'num_examples': 10_000_000,
-    'num_shards': 50,
-    'seed': 68744,
+    'input_file': '/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tf_pretrain_*.tfrecord',
+    'output_dir': '/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased-shuffled',
+    'num_examples': 1_000_000, # 10
+    'num_shards': 5, # 50
+    'seed': 12345,
 }
 
 input_files = list(glob(FLAGS['input_file']))

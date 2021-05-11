@@ -56,7 +56,8 @@ for filename in tqdm(file_names, ncols=80):
             continue
         else:
             #clean_r = _clean(r["p"])
-            if i % 100000 == 0:
+            # Each 500k lines, create new file
+            if i % 500000 == 0:
                 dest_path = dest_dir + '/{}.txt'.format(j)
                 with open(dest_path, 'w') as f:
                     f.write(out)

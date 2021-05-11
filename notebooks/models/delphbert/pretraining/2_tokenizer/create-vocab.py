@@ -4,12 +4,11 @@ from sentencepiece import SentencePieceTrainer
 
 
 NUM_THREADS = 8
-VOCABSIZE = 30_001
+VOCABSIZE = 32_000
 NUM_SENTS = 100_000_000
 
 
-#SOURCE_PATH = '/home/s2971992/Bertje/clean-data-v2/*/*.txt'
-SOURCE_PATH = '/home/leonardovida/data/volume_1/data-histaware/merged_articles/1970s/merged_articles/test/2.txt'
+SOURCE_PATH = '/home/leonardovida/data/volume_1/data-histaware/merged_articles/1970s/merged_articles/test/*.txt'
 
 input_paths = list(glob(SOURCE_PATH))
 input_path = ','.join(input_paths)

@@ -25,22 +25,25 @@ from tqdm import tqdm
 from transformers import BertTokenizer
 import tensorflow as tf
 
-#from delphbert.config.config import Settings
+# TO RUN WITH python 3.8.5
 
-VOCAB_PATH = "/home/leonardovida/data/volume_1/data-histaware/tokenizer/cased.txt"
-#VOCAB_PATH = "bert-base-multilingual-cased"
-
-#SOURCE_PATH = Settings.SOURCE_PATH
-SOURCE_PATH = "/home/leonardovida/data/volume_1/data-histaware/merged_articles/1970s/merged_articles/test/*.txt"
-DEST_PATHS = ['/home/leonardovida/data/volume_1/data-histaware/pretrain-data-cased/tf_pretrain_{}.tfrecord'.format(i) for i in range(30)]
+VOCAB_PATH = "/home/leonardovida/data/volume_1/data-histaware/tokenizer/1970/dutch.bert.vocab_mod.128.cased"
+SOURCE_PATH = "/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tr-00"
+DEST_PATHS = ['/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tf_pretrain_{}.tfrecord'.format(i) for i in range(30)]
 
 WHOLE_WORD_MASK = False
 MAX_SEQ_LENGTH = 128 # 512 should be here, otherwise finetune on 512
-MAX_PRED_PER_SEQ = 20
+MAX_PRED_PER_SEQ = 15
 RANDOM_SEED = 76565
 DUPE_FACTOR = 5
 MLM_MASK_PROB = 0.15
 SHORT_SEQ_PROB = 0.1
+
+# WORKS
+# python3 bert/create_pretraining_data.py --input_file "/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tr-00" --output_file /home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/%.tfrecord \
+# --vocab_file /home/leonardovida/data/volume_1/data-histaware/tokenizer/1970/dutch.bert.vocab_mod.128.cased --do_lower_case=False -max_seq_length=128 \
+# --max_predictions_per_seq=15 --masked_lm_prob=0.15 --random_seed=12345 \
+# --dupe_factor=5
 
 
 class TrainingInstance(object):
@@ -383,7 +386,8 @@ def truncate_seq_pair(tokens_a, tokens_b, max_num_tokens, rng):
 
 
 def main():
-    #tokenizer = BertTokenizer.from_pretrained(VOCAB_PATH, do_lower_case=False)
+    #tokenizer = tokenization.FullTokenizer(
+      #vocab_file=VOCAB_PATH, do_lower_case=False)
     tokenizer = BertTokenizer(VOCAB_PATH, do_lower_case=False)
     input_files = list(glob(SOURCE_PATH))
     rng = random.Random(RANDOM_SEED)
