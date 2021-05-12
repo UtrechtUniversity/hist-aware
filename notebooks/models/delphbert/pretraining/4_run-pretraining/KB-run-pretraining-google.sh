@@ -6,10 +6,8 @@ python bert/run_pretraining.py \
     --max_seq_length 128 \
     --max_predictions_per_seq 15 \
     --do_train True \
-    --train_batch_size 2 \
-    --learning_rate 1e-4
-    
-    
+    --train_batch_size 64 \
+    --learning_rate 1e-4 \
     --num_train_steps=1000000 \
     --iterations_per_loop=10000 \
     --num_warmup_steps=10000 \
