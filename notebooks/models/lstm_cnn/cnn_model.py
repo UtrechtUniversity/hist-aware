@@ -36,18 +36,7 @@ class CNN_Model():
 
         x = embedded_sequences
         x = Dropout(dropout[0])(x)
-        
-#         x = Conv1D(
-#             filters=num_filters,
-#             kernel_size=kernel_size,
-#             input_shape=(max_sequence_length,),
-#             activation='relu')(embedded_sequences)
-#         x = MaxPooling1D(pool_size=2)(x)
-#         x = Flatten()(x)
-#         x = Dense(10, activation='relu')(x)
-#         output = Dense(3, activation='sigmoid')(x)
 
-        
         # Convolutional block
         conv_blocks = []
         for sz in kernel_size:
@@ -65,9 +54,7 @@ class CNN_Model():
         x = Dense(self.hidden_dims, activation="relu")(x)
         output = Dense(3, activation="sigmoid")(x)
 
-##############
-        
-        
+
         model_cnn = Model(inputs=sequence_input, outputs=output)
 
 
