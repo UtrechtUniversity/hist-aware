@@ -37,8 +37,7 @@ class LSTM_Model():
         model_lstm = Model(inputs=sequence_input, outputs=output)
 
         model_lstm.compile(
-#             loss='categorical_crossentropy', optimizer=optimizer, metrics=['acc'])
-              loss='categorical_crossentropy', optimizer=optimizer, metrics=[Recall()])
+              loss='categorical_crossentropy', optimizer=optimizer, metrics=[Recall()]) #metrics=['acc']
         model_lstm.summary()
         return model_lstm
 
