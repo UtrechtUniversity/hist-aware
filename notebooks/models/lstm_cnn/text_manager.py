@@ -44,3 +44,11 @@ class TextManager():
         print('Shape of data tensor:', data.shape)
         print('Shape of label tensor:', labels.shape)
         return (data, labels, word_index)
+
+    def csv_to_txt(self, txt_fp, texts):
+        with open(txt_fp, 'a') as f:
+            for t in texts:
+                f.write(str(t) +'\n')
+                
+  
+        

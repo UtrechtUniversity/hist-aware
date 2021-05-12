@@ -1,5 +1,5 @@
 import numpy as np
-from keras.layers import Dense, Input, Flatten
+from keras.layers import Dense, Dropout, Input, Flatten, Concatenate
 from keras.layers.convolutional import Conv1D
 from keras.layers.convolutional import MaxPooling1D
  
@@ -12,8 +12,9 @@ class CNN_Model():
     """
     """
     # training arguments
-    batch_size = 16
+    batch_size = 64 #16
     epoch_no = 10
+    hidden_dims = 50
 
     def __init__(self, *args, **kwargs):
         self._model = self._get_cnn_model(*args, **kwargs)
@@ -24,31 +25,49 @@ class CNN_Model():
     def predict(self, feature, *args, **kwargs):
         return self._model.predict(np.array(feature))
 
-    def _get_cnn_model(self, optimizer,
-                         max_sequence_length, embedding_layer):
-#         model = Sequential()
-#         model.add(Embedding(vocab_size, 100, input_length=max_length))
-
-#         model.add(Conv1D(filters=32, kernel_size=8, activation='relu'))
-#         model.add(MaxPooling1D(pool_size=2))
-#         model.add(Flatten())
-#         model.add(Dense(10, activation='relu'))
-#         model.add(Dense(1, activation='sigmoid'))
-#         print(model.summary())
-
+    def _get_cnn_model(self, dropout, optimizer,
+                         max_sequence_length, embedding_layer, kernel_size=8, num_filters=32):
+        '''
+           https://github.com/karimkhanp/CNN-Sentiment-Analysis-Keras/blob/master/sentiment_cnn.py
+        '''
+        
         sequence_input = Input(shape=(max_sequence_length,), dtype='int32')
         embedded_sequences = embedding_layer(sequence_input)
 
-        x = Conv1D(
-            filters=32,
-            kernel_size=8,
-            input_shape=(max_sequence_length,),
-            activation='relu')(embedded_sequences)
-        x = MaxPooling1D(pool_size=2)(x)
-        x = Flatten()(x)
-        x = Dense(10, activation='relu')(x)
-        output = Dense(3, activation='sigmoid')(x)
+        x = embedded_sequences
+        x = Dropout(dropout[0])(x)
+        
+#         x = Conv1D(
+#             filters=num_filters,
+#             kernel_size=kernel_size,
+#             input_shape=(max_sequence_length,),
+#             activation='relu')(embedded_sequences)
+#         x = MaxPooling1D(pool_size=2)(x)
+#         x = Flatten()(x)
+#         x = Dense(10, activation='relu')(x)
+#         output = Dense(3, activation='sigmoid')(x)
 
+        
+        # Convolutional block
+        conv_blocks = []
+        for sz in kernel_size:
+            conv = Conv1D(filters=num_filters,
+                                 kernel_size=sz,
+                                 padding="valid",
+                                 activation="relu",
+                                 strides=1)(x)
+            conv = MaxPooling1D(pool_size=2)(conv)
+            conv = Flatten()(conv)
+            conv_blocks.append(conv)
+        x = Concatenate()(conv_blocks) if len(conv_blocks) > 1 else conv_blocks[0]
+
+        x = Dropout(dropout[1])(x)
+        x = Dense(self.hidden_dims, activation="relu")(x)
+        output = Dense(3, activation="sigmoid")(x)
+
+##############
+        
+        
         model_cnn = Model(inputs=sequence_input, outputs=output)
 
 
