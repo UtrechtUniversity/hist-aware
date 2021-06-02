@@ -5,7 +5,6 @@ from pathlib import Path
 
 from imblearn.over_sampling import SMOTE
 from loguru import logger
-from knockknock import email_sender
 from sklearn.naive_bayes import MultinomialNB
 
 from src.nlp_pipeline import PipelineArticles
@@ -16,11 +15,6 @@ from src.utils import utils
 
 # Import modules
 sys.path.insert(0, "..")
-
-
-@email_sender(recipient_emails=["lleonardovida@gmail.com"])
-def alert_finish_run():
-    return None
 
 
 if __name__ == "__main__":

@@ -82,7 +82,17 @@ def iterate_directory_gz(dir_path, file_type):
     return list_gzs
 
 
-def _save_to_csv(save_path, data_list_name, pre_i, cur_i, articles):
+def _save_to_csv_metadata(save_path, data_list_name, pre_i, cur_i, articles):
+    # TODO: Here potential path problem
+    file_path = os.path.join(
+        save_path,
+        data_list_name + str(pre_i) + "_" + str(cur_i) + ".csv",
+    )
+    main = pd.DataFrame.from_dict(chain.from_iterable(articles))  # list(chain())?
+    main.to_csv(file_path)
+
+
+def _save_to_csv_articles(save_path, data_list_name, pre_i, cur_i, articles):
     # TODO: Here potential path problem
     file_path = os.path.join(
         save_path,
@@ -129,7 +139,7 @@ def iterate_files(
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_articles(
                     save_path, "articles", previous_i, current_i, list_articles
                 )
                 list_articles = []
@@ -149,7 +159,7 @@ def iterate_files(
                 cnt += 1
             if index == len(files) - 1:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_articles(
                     save_path, "articles", previous_i, current_i, list_articles
                 )
                 list_articles = []
@@ -180,7 +190,7 @@ def iterate_files(
             # Each X, save the file in a .ftr
             if i == save_each:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_articles(
                     save_path, "articles", previous_i, current_i, list_articles
                 )
                 list_articles = []
@@ -200,7 +210,7 @@ def iterate_files(
                 cnt += 1
             if index == len(files) - 1:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_articles(
                     save_path, "articles", previous_i, current_i, list_articles
                 )
                 list_articles = []
@@ -212,8 +222,8 @@ def iterate_files(
 def iterate_metadata(
     save_path,
     files,
-    save_each=10000,
-    progress_each=10000,
+    save_each=10000,  # 10000
+    progress_each=10000,  # 10000
     restart=False,
     index_restart=0,
 ):
@@ -247,7 +257,7 @@ def iterate_metadata(
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_metadata(
                     save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
                 list_articles_metadata = []
@@ -267,7 +277,7 @@ def iterate_metadata(
                 cnt += 1
             if index == len(files) - 1:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_metadata(
                     save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
                 list_articles_metadata = []
@@ -296,7 +306,7 @@ def iterate_metadata(
             # Each X, save the file in a .csv
             if i == save_each:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_metadata(
                     save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
                 list_articles_metadata = []
@@ -316,7 +326,7 @@ def iterate_metadata(
                 cnt += 1
             if index == len(files) - 1:
                 current_i = current_i + i
-                _save_to_csv(
+                _save_to_csv_metadata(
                     save_path, "metadata", previous_i, current_i, list_articles_metadata
                 )
                 list_articles_metadata = []

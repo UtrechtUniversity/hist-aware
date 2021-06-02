@@ -217,12 +217,19 @@ class PipelineArticles:
         li = []
 
         # Read all the metadata into one file
+        logger.debug("Loading metadata files")
         for index, row in self.csv_metadata.iterrows():
-            csv_file = pd.read_csv(row["csv_path"])
+            csv_file = pd.read_csv(
+                row["csv_path"],
+                index_col=False,
+                warn_bad_lines=True,
+                error_bad_lines=False,
+            )
             csv_file = utils.clean_article_identifier(csv_file)
             logger.debug(f"Loaded metadata # {index}")
             li.append(csv_file)
 
+        logger.debug("Processing loaded metadata")
         self.df_metadata = pd.concat(li, axis=0)
         self.df_metadata.drop(columns=["date"], inplace=True)
         self.df_metadata = self.df_metadata[self.df_metadata["subject"] == "artikel"]
