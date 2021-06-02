@@ -220,7 +220,7 @@ class PipelineArticles:
         for index, row in self.csv_metadata.iterrows():
             csv_file = pd.read_csv(row["csv_path"])
             csv_file = utils.clean_article_identifier(csv_file)
-            logger.debug("Loaded metadata")
+            logger.debug(f"Loaded metadata # {index}")
             li.append(csv_file)
 
         self.df_metadata = pd.concat(li, axis=0)
@@ -244,7 +244,7 @@ class PipelineArticles:
             li.append(csv_file)
             if i != 0:
                 if i % 20 == 0:
-                    logger.debug(f"Currently merging {i*50000} articles")
+                    logger.debug(f"Merging {i*50000} articles")
                     df_articles = pd.concat(li, axis=0)
                     df_articles.sort_values(by=["index"], ascending=True)
                     df_articles.rename(
@@ -279,7 +279,7 @@ class PipelineArticles:
                         },
                         inplace=True,
                     )
-                    df_joined.to_csv(NAME_JOINED, quoting=csv.QUOTE_NONNUMERIC)
+                    df_joined.to_csv(NAME_JOINED)
                     li = []
                     df_articles = pd.DataFrame()
         return None

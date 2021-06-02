@@ -16,14 +16,14 @@ class Settings(BaseSettings):
     DATA_DIR_DELPHER: str = "delpher"
 
     # Select decade
-    DECADE: str = "1970s"
+    DECADE: str = "1980s"
     # Bool to ungizp metadata, do only once!
-    UNGIZP: bool = False
+    UNGIZP: bool = True
     # Decide whether to process and save articles and metadata data
     DATAFILE: Dict = {
         "start": "True",
         "metadata": "True",
-        "articles": "False",
+        "articles": "True",
     }
     # Merge articles and metadata
     MERGE: bool = True
