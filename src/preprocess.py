@@ -1,13 +1,11 @@
 # preprocess.py
 import re
 
-import enchant
 import nltk
 
 
 class TextCleaner:
     def __init__(self):
-        self.d = enchant.Dict("nl_NL")
         self.stopword_list = nltk.corpus.stopwords.words("dutch")
         self.STOPWORDS = set(self.stopword_list)
 
@@ -44,13 +42,6 @@ class TextCleaner:
         self.text = " ".join([w for w in self.text.split() if len(w) > 1])
         return self
 
-    def remove_non_words(self):
-        """Remove rare words."""
-        self.text = " ".join(
-            [word for word in str(self.text).split() if self.d.check(word)]
-        )
-        return self
-
     def keep_standard_chars(self):
         self.text = "".join([re.sub(r"[^-0-9\w,. ?!()%/]", r"", c) for c in self.text])
         return self
@@ -63,7 +54,6 @@ class TextCleaner:
         self = self.remove_numeric()
         self = self.remove_extra_whitespace_tabs()
         self = self.remove_one_char()
-        self = self.remove_non_words()
         return self.text
 
     def clean(self, text):

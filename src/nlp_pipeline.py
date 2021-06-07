@@ -26,6 +26,7 @@ from src.utils.iterators import (
 from src.article_selection import select_articles
 from src.preprocess import TextCleaner
 from src.utils import utils
+from src.utils.tokenizer import BasicTokenizer
 
 # Just some code to print debug information to stdout
 np.set_printoptions(threshold=100)
@@ -322,6 +323,7 @@ class PipelineArticles:
         csv_temp = []
         # Create preprocessing class
         self.tc = TextCleaner()
+        self.tokenizer = BasicTokenizer()
 
         # Load selected articles for selected topic in nlp_pipeline
         csv = iterate_directory(self.SELECTED_DECADE, ".csv")
@@ -354,6 +356,11 @@ class PipelineArticles:
         logger.debug(
             f"Number of articles after splitting into paragraphs: {df.shape[0]}"
         )
+
+        # Preprocess p to tokenized p
+        res = df["p"].progress_apply(self.tokenizer.tokenize)
+        df["p_tokenized"] = res
+
         # Preprocess text to text_clean
         res = df["p"].progress_apply(self.tc.preprocess)
         df["text_clean"] = res
