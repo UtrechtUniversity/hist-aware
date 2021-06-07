@@ -346,6 +346,9 @@ class PipelineArticles:
             f"Number of articles before splitting into paragraphs: {df.shape[0]}"
         )
         df = df[df["subject"] == "artikel"]
+        logger.debug(
+            f"Number of articles after selecting only 'subject=artikel': {df.shape[0]}"
+        )
         df["p"] = df.apply(lambda row: repr(row["p"]).split("\\',"), axis=1)
         df = df.explode("p")
         logger.debug(

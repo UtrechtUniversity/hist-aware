@@ -94,5 +94,3 @@ if __name__ == "__main__":
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.95)
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.98)
         ca.predict(pipe, settings.DECADE, THRESHOLD=0.99)
-
-        alert_finish_run()
