@@ -8,10 +8,12 @@ from tqdm import tqdm
 import pandas as pd
 
 import nltk.data
-from delphbert.pretraining.tokenizer.tokenizer import BasicTokenizer
+from tokenizer import BasicTokenizer
 
 if len(sys.argv) < 3:
     print('Usage: python3 KB-prepare-newspapers.py source-path dest-path')
+
+# python3 pretraining/KB-prepare-newspapers.py /home/leonardovida/data/volume_1/data-histaware/1-raw-data/1960 /home/leonardovida/data/volume_1/delphbert-results/1-raw_files
 
 source_dir = sys.argv[1]
 dest_dir = sys.argv[2]
