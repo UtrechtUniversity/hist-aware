@@ -6,8 +6,8 @@ import tensorflow as tf
 
 
 FLAGS = {
-    'input_file': '/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tf_pretrain_*.tfrecord',
-    'output_dir': '/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased-shuffled',
+    'input_file': '/home/leonardovida/data/volume_1/delphbert-results/3-pretraining_data_cased/1960/tf_pretrain_*.tfrecord',
+    'output_dir': '/home/leonardovida/data/volume_1/delphbert-results/4-pretraining-data-cased-shuffled/1960/',
     'num_examples': 1_000_000, # 10
     'num_shards': 5, # 50
     'seed': 12345,

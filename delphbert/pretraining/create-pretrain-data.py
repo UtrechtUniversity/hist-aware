@@ -27,9 +27,9 @@ import tensorflow as tf
 
 # TO RUN WITH python 3.8.5
 
-VOCAB_PATH = "/home/leonardovida/data/volume_1/data-histaware/tokenizer/1970/dutch.bert.vocab_mod.128.cased"
-SOURCE_PATH = "/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tr-00"
-DEST_PATHS = ['/home/leonardovida/data/volume_1/data-histaware/pretraining-data-cased/tf_pretrain_{}.tfrecord'.format(i) for i in range(30)]
+VOCAB_PATH = "/home/leonardovida/data/volume_1/delphbert-results/2-tokenizers/1960/dutch.vocab.mod"
+SOURCE_PATH = "/home/leonardovida/data/volume_1/delphbert-results/1-raw_files/1960/1.txt"
+DEST_PATHS = ['/home/leonardovida/data/volume_1/delphbert-results/3-pretraining_data_cased/1960/tf_pretrain_{}.tfrecord'.format(i) for i in range(3)]
 
 WHOLE_WORD_MASK = False
 MAX_SEQ_LENGTH = 128 # 512 should be here, otherwise finetune on 512

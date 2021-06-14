@@ -13,7 +13,10 @@ from tokenizer import BasicTokenizer
 if len(sys.argv) < 3:
     print('Usage: python3 KB-prepare-newspapers.py source-path dest-path')
 
-# python3 pretraining/KB-prepare-newspapers.py /home/leonardovida/data/volume_1/data-histaware/1-raw-data/1960 /home/leonardovida/data/volume_1/delphbert-results/1-raw_files
+# python3 pretraining/KB-prepare-newspapers.py /home/leonardovida/data/volume_1/data-histaware/1-raw-data/1960 /home/leonardovida/data/volume_1/delphbert-results/1-raw_files/1960
+# python3 pretraining/KB-prepare-newspapers.py /home/leonardovida/data/volume_1/data-histaware/1-raw-data/1970 /home/leonardovida/data/volume_1/delphbert-results/1-raw_files/1970
+# python3 pretraining/KB-prepare-newspapers.py /home/leonardovida/data/volume_1/data-histaware/1-raw-data/1980 /home/leonardovida/data/volume_1/delphbert-results/1-raw_files/1980
+# python3 pretraining/KB-prepare-newspapers.py /home/leonardovida/data/volume_1/data-histaware/1-raw-data/1990 /home/leonardovida/data/volume_1/delphbert-results/1-raw_files/1990
 
 source_dir = sys.argv[1]
 dest_dir = sys.argv[2]
