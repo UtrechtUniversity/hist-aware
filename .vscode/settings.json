@@ -3,5 +3,8 @@
   "python.formatting.provider": "black",
   "python.linting.flake8Enabled": true,
   "python.linting.enabled": true,
-  "python.linting.flake8Args": ["--max-line-length=88"]
+  "python.linting.flake8Args": [
+    "--max-line-length=88"
+  ],
+  "python.pythonPath": "/home/leonardovida/.cache/pypoetry/virtualenvs/histaware-NidRwJ64-py3.8/bin/python"
 }

@@ -2,6 +2,8 @@
 src/core/config.py
 *.arrow
 
+*/logging/**/*
+
 # Data
 data/raw/**/*
 data/models/**/*
