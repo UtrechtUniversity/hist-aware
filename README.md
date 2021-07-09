@@ -135,38 +135,6 @@ From this point onward, the variables should be configured for each topic one wa
 * `PREPROCESS`: we want to preprocess articles to clean them.
 * `CLASSIFY`: if there is a labeler available that can label N examples of articles that belong to the topic one wants to extract for this decade, then we suggest to put this setting to `True` and 
 
-    # If other decade than current used to classify with NB
-    # set custom labels to True and select the decade below
-    CUSTOM_LABELS: bool = True
-    CUSTOM_DECADES: List = ["1970s", "1980s", "1990s"]
-
-To ungzip the metadata in `.xml` form:
-```
-UNGIZP = False
-```
-
-To process and save articles and metadata data
-``` 
-DATAFILE = dict(
-    {
-        "start": "False",
-        "metadata": "False",
-        "articles": "False",
-    }
-)
-```
-
-To carry out the text search
-```
-SEARCH_WORDS = False # Search using included and excluded words
-KEYWORDS = kw.KEYWORDS_GAS # Words to include in search
-EXCL_WORDS = kw.EXCL_WORDS_GAS # Words to exclude from search
-PREPROCESS = False # Preprocess articles from .xml to .csv
-CLASSIFY = True # Classify using tfidf and naive bayes
-TOPIC = "gas" # Topic of interest
-DECADE = "1990s" # Decade of interest
-```
-
 <!-- ROADMAP -->
 ## Roadmap
 
