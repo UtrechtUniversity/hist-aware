@@ -1,0 +1,15 @@
+python3 /home/leonardovida/dev/bert/run_pretraining.py \
+    --bert_config_file /home/leonardovida/dev/hist-aware/delphbert/config/bert_config.json \
+    --input_file "/home/leonardovida/data/volume_1/delphbert-results/3-pretraining_data_cased/1960/tf_*.tfrecord" \
+    --vocab_file /home/leonardovida/data/volume_1/delphbert-results/2-tokenizers/1960/dutch.vocab.mod \
+    --output_dir /home/leonardovida/data/volume_1/delphbert-results/5-pretraining-output \
+    --max_seq_length 128 \
+    --max_predictions_per_seq 15 \
+    --do_train True \
+    --train_batch_size 64 \
+    --learning_rate 1e-4 \
+    --num_train_steps=1000000 \
+    --iterations_per_loop=10000 \
+    --num_warmup_steps=10000 \
+    --save_checkpoints_steps=10000 \
+    --max_eval_steps=10000
