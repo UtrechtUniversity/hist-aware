@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     # Name of delpher directory
     DATA_DIR_DELPHER: str = "delpher"
 
+    # TO BE CHANGED FOR EACH DECADE
+
     # Select decade
     DECADE: str = "1980s"
     # Bool to ungizp metadata, do only once!

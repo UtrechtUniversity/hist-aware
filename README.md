@@ -84,34 +84,56 @@ To carry out the main extraction of Delpher articles you will make use of the fi
 
 This is a temporary file used to route the complete extraction and first selection of articles. The selection and extraction will later be changed to be easily operable by non-experts.
 
-Currently, there are some variables that have to be changed for the extraction of each batch. Those are the following:
+Currently, there are some variables that have to be changed for the extraction of each batch. All the variables that need to be changed are found in the file [`src/core/config.py`](`src/core/config.py`):
 
-To ungzip the metadata in `.xml` form:
-```
-UNGIZP = False
-```
+### Core variables
 
-To process and save articles and metadata data
-``` 
-DATAFILE = dict(
-    {
-        "start": "False",
-        "metadata": "False",
-        "articles": "False",
-    }
-)
-```
+#### Directory variables
 
-To carry out the text search
-```
-SEARCH_WORDS = False # Search using included and excluded words
-KEYWORDS = kw.KEYWORDS_GAS # Words to include in search
-EXCL_WORDS = kw.EXCL_WORDS_GAS # Words to exclude from search
-PREPROCESS = False # Preprocess articles from .xml to .csv
-CLASSIFY = True # Classify using tfidf and naive bayes
-TOPIC = "gas" # Topic of interest
-DECADE = "1990s" # Decade of interest
-```
+All these directories need to be first created manually. The configuration parameters are only used to tell the processing scripts where to find the data.
+
+* `DATA_DIR`: the name of the main directory in the base path
+* `DATA_DIR_SAVE`: the name of the directory where the processed data will be saved
+* `DATA_DIR_RAW`: the name of the directory that contains the raw files within `DATA_DIR`
+* `DATA_DIR_DELPHER`: the name of the directory containing the delpher raw data
+
+The folder structure should look like this:
+<p align="center">
+    <img src="img/folder-structure.png" alt="Logo" height="250">
+</a>
+
+* Within each folder, there should be the same structure of the decades of the data available. For example:
+    * file_info:
+      * 1960s
+        * All the years of 1960s 
+      * 1970s 
+       * All the years of 1960s 
+
+
+#### Variables specific for the extraction of each decade
+
+We retrieved data from KB downloading one decade at the time. Each decade we downloaded was composed by 10 files, each representing one year (1980, 1981, ...). These files were put into a folder called `1980s` for the years 1980-1989, `1990s` for 1990-1999 and so on.
+
+We then processed each decade at the time configuring the following variable for each decade and the "topic" of articles we were searching for.
+
+* `DECADE`: string indicating the decade we are interested in using in the processing.
+
+Given the slow processing of these files, we recommend to set the next values to `True` only once per decade (meaning that if you have mulitple topics you want to extract, after the first topic these values should be `False`)
+  * `UNGIZP`: boolean indicating whether to ungizp the metadata files into .xml. G
+  * `DATAFILE`: is a dictionary that allows us to decide whether to process and save articles and metadata data. **This is a long process and should be also done only once per decade!**.
+    * `start`: should be `True` to start the process
+    * `metadata`: should be `True` process metadata into .csv files
+    * `articles`: should be `True` process articles into .csv files
+  * `MERGE`: is a boolean value to merge articles and metadata. Please take in consideration that this is also a slow process (2/3 hours per decade with 8 cores)
+
+From this point onward, the variables should be configured for each topic one wants to extract within a decade.
+
+* `TOPIC`: name of the topic
+* `SEARCH_WORDS`: should be True when searching for keywords before running the tf-idf within the found articles
+* `LIST_INCL_WORDS`: we use a word list to include articles that contains words. Please add your list to [`src.utils.keywords`](src.utils.keywords)
+* `LIST_EXCL_WORDS`: we use a word list to exclude articles that contains words. Please add your list to [`src.utils.keywords`](src.utils.keywords)
+* `PREPROCESS`: we want to preprocess articles to clean them.
+* `CLASSIFY`: if there is a labeler available that can label N examples of articles that belong to the topic one wants to extract for this decade, then we suggest to put this setting to `True` and 
 
 <!-- ROADMAP -->
 ## Roadmap
