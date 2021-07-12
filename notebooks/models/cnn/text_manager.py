@@ -1,8 +1,7 @@
-import numpy as np
+
 import pandas as pd
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.utils import to_categorical
 from text_cleaner import TextCleaner
 
 
@@ -14,9 +13,9 @@ class TextManager():
         self.max_num_words = max_num_words
         self.max_sequence_length = max_sequence_length
 
-    def _tokenizer(self, texts, labels):
-        # vectorize the text samples into a 2D integer tensor
-        tokenizer = Tokenizer(num_words=self.max_num_words)
+    def _tokenizer(self, texts):
+        """vectorize the text samples into a 2D integer tensor"""
+        tokenizer = Tokenizer(oov_token = True, num_words=self.max_num_words)
         tokenizer.fit_on_texts(texts)
 
         # get the word index
@@ -30,9 +29,13 @@ class TextManager():
             cleaned_texts =sr_texts.apply(txt_cleaner.preprocess)
             return cleaned_texts
 
-    def sequence_maker(self, texts, labels):
+    def create_tokenizer(self, texts):
+        word_index, tokenizer = self._tokenizer(texts)
+        return word_index, tokenizer
+    
+    def sequence_maker(self, tokenizer, texts):
 
-        word_index, tokenizer = self._tokenizer(texts, labels)
+        #word_index, tokenizer = self._tokenizer(texts)
         sequences = tokenizer.texts_to_sequences(texts)
 
         data = pad_sequences(
@@ -40,10 +43,9 @@ class TextManager():
             maxlen=self.max_sequence_length,
             padding='post',
             truncating='post')
-        labels = to_categorical(np.asarray(labels))
+
         print('Shape of data tensor:', data.shape)
-        print('Shape of label tensor:', labels.shape)
-        return (data, labels, word_index)
+        return data
 
     def csv_to_txt(self, txt_fp, texts):
         with open(txt_fp, 'a') as f:

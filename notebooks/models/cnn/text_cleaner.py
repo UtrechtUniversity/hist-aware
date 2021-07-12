@@ -1,6 +1,5 @@
 import re
-
-# import enchant
+#import enchant
 import nltk
 #nltk.download('stopwords')
 #nltk.download('punkt')
@@ -8,11 +7,12 @@ import nltk
 
 class TextCleaner:
     def __init__(self):
-#         self.d = enchant.Dict("nl_NL")
+        #self.d = enchant.Dict("nl_NL")
         self.stopword_list = nltk.corpus.stopwords.words("dutch")
         self.STOPWORDS = set(self.stopword_list)
 
     def get_words(self):
+        """get words"""
         self.text = " ".join([c for c in nltk.word_tokenize(self.text)]) #,language="dutch"
         return self
 
@@ -42,6 +42,7 @@ class TextCleaner:
         return self
 
     def remove_one_char(self):
+        """Remove one char"""
         self.text = " ".join([w for w in self.text.split() if len(w) > 1])
         return self
 
@@ -73,3 +74,7 @@ class TextCleaner:
         self = self.keep_standard_chars()
         self = self.remove_extra_whitespace_tabs()
         return self.text
+    
+                
+                
+    
